@@ -1,8 +1,13 @@
 ﻿using AutoMapper;
 using BusinessAccessLayes.Services.Interfaces;
+using BusinessAccessLayes.Specification.Lessons;
+using DataAccessLayer.Models.Announcements;
+using DataAccessLayer.Models.Contents.Comments;
 using DataAccessLayer.Models.Contents.Lessons;
 using DataAccessLayer.Repositories.UnitOfWork;
+using Microsoft.AspNetCore.Mvc;
 using Shared.DataTransferObjects.Announcements;
+using Shared.DataTransferObjects.Comments;
 using Shared.DataTransferObjects.Lessons;
 using System;
 using System.Collections.Generic;
@@ -14,31 +19,68 @@ namespace BusinessAccessLayes.Services.Classes
 {
     public class LessonService(IUnitOfWork unitOfWork, IMapper mapper) : ILessonService
     {
-        public Task<AnnouncementDTO> GetAllAnnouncementAsync()
+
+
+        public async Task DeleteLesson(int id )
         {
-            throw new NotImplementedException();
-        }
-        public Task<AnnouncementDTO?> GetAllComments(int id)
-        {
-            throw new NotImplementedException();
+            var repo = unitOfWork.GetRepository<Lesson, int>();
+
+            var lesson =await repo.GetByIdAsync(id);
+            if(lesson is not null)
+            {
+            repo.Delete(lesson);
+            await unitOfWork.SaveChangesAsync();
+
+            }
+
         }
 
-        public async Task<IEnumerable<LessonDTO>> GetAllLessonsAsync()
+
+
+        public async Task<IEnumerable<LessonDTO>> GetAllLessonsAsync([FromQuery] LessonQueryParams queryParams)
         {
             var repo= unitOfWork.GetRepository<Lesson,int>();
-            var lessons =await repo.GetAllAsync();
-            return mapper.Map<IEnumerable<Lesson>,IEnumerable<LessonDTO>>(lessons);
+            var specification = new LessonWithAllDetailsSpecification(queryParams);
+            var lessons =await repo.GetAllAsync(specification);
+           var lessonDTO = mapper.Map<IEnumerable<Lesson>,IEnumerable<LessonDTO>>(lessons);
+            return lessonDTO;
         }
+
+
+
+
+        public async Task AddLessonAsync(UpdateLessonDTO updateLessonDTO)
+        {
+            var repo = unitOfWork.GetRepository<Lesson, int>();
+            var lesson=mapper.Map<UpdateLessonDTO,Lesson>(updateLessonDTO);
+           await repo.AddAsync(lesson);
+            await unitOfWork.SaveChangesAsync();
+
+        }
+
+
+
+        public async Task UpdateLessonAsync(UpdateLessonDTO updateLessonDTO)
+        {
+            var repo = unitOfWork.GetRepository<Lesson, int>();
+            var lesson=mapper.Map<UpdateLessonDTO,Lesson>(updateLessonDTO);
+            repo.Update(lesson);
+           await  unitOfWork.SaveChangesAsync();
+        }
+
+
 
         public async Task<LessonDetailsDTO?> GetLessonByIdAsync(int id)
         {
-            var repo= unitOfWork.GetRepository<Lesson,int>();
-            var lesson =await repo.GetByIdAsync(id);
+            var repo = unitOfWork.GetRepository<Lesson, int>();
+            var lesson = await repo.GetByIdAsync(id);
 
             if (lesson is not null)
-            return mapper.Map<LessonDetailsDTO>(lesson);
-            
+                return mapper.Map<LessonDetailsDTO>(lesson);
+
             return null;
         }
+
+    
     }
 }

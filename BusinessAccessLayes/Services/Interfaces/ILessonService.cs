@@ -1,4 +1,6 @@
-﻿using Shared.DataTransferObjects.Announcements;
+﻿using Microsoft.AspNetCore.Mvc;
+using Shared.DataTransferObjects.Announcements;
+using Shared.DataTransferObjects.Comments;
 using Shared.DataTransferObjects.Lessons;
 using System;
 using System.Collections.Generic;
@@ -10,11 +12,26 @@ namespace BusinessAccessLayes.Services.Interfaces
 {
     public interface ILessonService
     {
-        Task<IEnumerable<LessonDTO>> GetAllLessonsAsync();
-        Task<LessonDetailsDTO?> GetLessonByIdAsync(int id);
 
-        Task<AnnouncementDTO> GetAllAnnouncementAsync();
+        Task AddLessonAsync(UpdateLessonDTO updateLessonDTO);
        
+        //////////
+        
+        Task UpdateLessonAsync(UpdateLessonDTO updateLessonDTO);
+
+        //////////
+        
+        public Task DeleteLesson(int id) ;
+
+        //////////
+
+        Task<LessonDetailsDTO?> GetLessonByIdAsync(int id);
+        
+        //////////
+
+        Task<IEnumerable<LessonDTO>> GetAllLessonsAsync([FromQuery] LessonQueryParams queryParams);
+         
+
 
 
 

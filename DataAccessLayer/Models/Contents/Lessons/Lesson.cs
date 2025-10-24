@@ -2,13 +2,14 @@
 using DataAccessLayer.Models.Contents.Comments;
 using DataAccessLayer.Models.Contents.Courses;
 using DataAccessLayer.Models.Contents.Exams;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccessLayer.Models.Contents.Lessons
 {
     public class Lesson : BaseOfAllContentEntities<int>
     {
-        public string Title { get; set; }
+        public string Title { get; set; } = null!;
         public string? Description { get; set; }
         public string? ImageName { get; set; }
         //public List<string> VideoName { get; set; }
@@ -36,6 +37,8 @@ namespace DataAccessLayer.Models.Contents.Lessons
 
         public ICollection<StudentLesson> studentLessons { get; set; } = new HashSet<StudentLesson>();
 
+        [InverseProperty(nameof(LessonVideo.Lesson))]
+        public ICollection<LessonVideo>? LessonVideos { get; set; } = new HashSet<LessonVideo>();
 
     }
 

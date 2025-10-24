@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Data.Contexts;
+﻿using BusinessAccessLayes.Specification;
+using DataAccessLayer.Data.Contexts;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -16,14 +17,10 @@ namespace DataAccessLayer.Contracts
            await dbContext.Set<IEntity>().AddAsync(entity);
         }
 
-        public void DeleteAsync(IEntity entity)
-        {
-           dbContext.Set<IEntity>().Remove(entity);
-        }
 
-        public async Task<IEnumerable<IEntity>> GetAllAsync()
+        public async Task<IEnumerable<IEntity>> GetAllAsync(ISpecification<IEntity, TKey> specification)
         {
-           return await dbContext.Set<IEntity>().ToListAsync();
+            return await SpecificationEvaluator.CreateQuery(specification, dbContext.Set<IEntity>()).ToListAsync();
         }
 
         public async Task<IEntity?> GetByIdAsync(TKey id)
@@ -31,9 +28,18 @@ namespace DataAccessLayer.Contracts
             return await dbContext.Set<IEntity>().FindAsync(id);
         }
 
-        public void UpdateAsync(IEntity entity)
+        public void Update(IEntity entity)
         {
              dbContext.Set<IEntity>().Update(entity);
+        }
+        public void Delete(IEntity entity)
+        {
+           dbContext.Set<IEntity>().Remove(entity);
+        }
+
+        public async Task<IEnumerable<IEntity>> GetAllAsync()
+        {
+           return  await  dbContext.Set<IEntity>().ToListAsync();
         }
     }
 }
