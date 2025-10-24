@@ -13,7 +13,8 @@ namespace DataAccessLayer.Models.Contents.Lessons
     {
         public int LessonID { get; set; }
         [ForeignKey(nameof(LessonID))]
-        public Lesson Lesson { get; set; }=null!;
+        public Lesson? Lesson { get; set; }=null!;
+
         public string VideoURL { get; set; }=null!;
     }
 }

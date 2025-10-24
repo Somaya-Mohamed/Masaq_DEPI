@@ -9,6 +9,8 @@ namespace BusinessAccessLayes.ServiceManagers
 {
     public interface IServiceManager
     {
-        public ILessonService LessontService { get; }
+        public ILessonService LessonService { get; }
+        public IAnncouncementService AnnouncementService { get; }
+        public ICommentService CommentService { get; }  
     }
 }

@@ -16,7 +16,7 @@ namespace DataAccessLayer.Repositories.UnitOfWork
         public IGenericRepository<TEntity, TKey> GetRepository<TEntity, TKey>() where TEntity : BaseOfAllContentEntities<TKey>
         {
 
-            var typeName = nameof(TEntity);
+            var typeName = typeof(TEntity).Name;
             if (_repositories.ContainsKey(typeName))
                 return (IGenericRepository<TEntity, TKey>)_repositories[typeName];
             //create repo object

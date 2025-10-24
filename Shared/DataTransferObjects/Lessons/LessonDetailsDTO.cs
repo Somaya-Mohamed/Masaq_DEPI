@@ -18,11 +18,11 @@ namespace Shared.DataTransferObjects.Lessons
 
         public string CourseName { get; set; } = null!;
         public string LevelName { get; set; } = null!; // 👈 New field
+        public IEnumerable<string> Videos { get; set; } = [];
 
 
         public IEnumerable<AnnouncementDTO> Announcements { get; set; } = [];
         public IEnumerable<CommentDTO> Comments { get; set; } = [];
-        public IEnumerable<string> Videos { get; set; } = [];
 
 
 

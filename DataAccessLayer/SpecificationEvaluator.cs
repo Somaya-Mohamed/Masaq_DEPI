@@ -1,12 +1,15 @@
-﻿using DataAccessLayer.Models;
+﻿using BusinessAccessLayes.Specification;
+using DataAccessLayer.Models;
+using DataAccessLayer.Models.Contents.Lessons;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessAccessLayes.Specification
+namespace DataAccessLayer
 {
     public static class SpecificationEvaluator
     {
@@ -40,6 +43,12 @@ namespace BusinessAccessLayes.Specification
                 query = specification.IncludeExpressions.Aggregate(query, (currentQuery, includeExpression) => currentQuery.Include(includeExpression));
 
             }
+            if (typeof(TEntity) == typeof(Lesson))
+                query = query.Cast<Lesson>()
+                             .Include(l => l.course)
+                             .ThenInclude(c => c.Level)
+                             .Cast<TEntity>();
+
             return query;
         }
 
