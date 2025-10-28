@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Principal;
 using System.Text;
@@ -12,23 +13,29 @@ namespace DataAccessLayer.Models
 {
     public abstract class HumanBaseEntity
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public int Age { get; set; }
-        public string FName { get; set; } = null!;
-        public string LName { get; set; }= null!;
-        public Gender Gender { get; set; }
+        [AllowNull]
+        public int? Age { get; set; }
+        public string FullName { get; set; }
+        [AllowNull]
+        public Gender? Gender { get; set; }
         [EmailAddress]
-        public string email { get; set; } = null!;
+        [AllowNull]
+        public string? email { get; set; }
         //public string Password { get; set; }
-        public string Address { get; set; } = null!;
-        public string? City { get; set; } = null!;
+
+        [AllowNull]
+        public string? Address { get; set; }
+        [AllowNull]
+        public string? City { get; set; } 
         public DateTime LastActive { get; set; }
-       public bool IsDeleted { get; set; } //Soft Delete
+
+        public bool IsDeleted { get; set; } = false; //Soft Delete
 
 
-        [InverseProperty(nameof(UserNotification.User))]
 
-        public ICollection<UserNotification> UserNotifications { get; set; } = new HashSet<UserNotification>();
 
 
     }

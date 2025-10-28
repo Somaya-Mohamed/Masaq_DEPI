@@ -10,5 +10,7 @@ namespace BusinessAccessLayes.ServiceManagers
     public interface IServiceManager
     {
         public ILessonService LessontService { get; }
+
+        public IAuthenticationService AuthenticationService { get; }
     }
 }
