@@ -6,16 +6,12 @@ using System.Threading.Tasks;
 
 namespace Shared.DataTransferObjects.Comments
 {
-    public class CommentDTO
+    public class CreateCommentDTO
     {
         public int Id { get; set; }
         public string Body { get; set; }
         public string? Image { get; set; }
-        public int CreatedBy { get; set; }// UserId
-        public DateTime? CreatedOn { get; set; }// Date
-
-
-
-
+        public int StudentIdFK { get; set; }
+        public int LessonIdFK { get; set; }
     }
 }

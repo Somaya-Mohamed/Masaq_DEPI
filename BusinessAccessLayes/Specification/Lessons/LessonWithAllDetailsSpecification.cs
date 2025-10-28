@@ -10,11 +10,14 @@ namespace BusinessAccessLayes.Specification.Lessons
 {
     public class LessonWithAllDetailsSpecification : BaseSpecification<Lesson, int>
     {
-        public LessonWithAllDetailsSpecification(LessonQueryParams queryParams):base(P=>(string.IsNullOrEmpty(queryParams.SearchValue) || P.Title.ToLower().Contains(queryParams.SearchValue.ToLower())))
+        public LessonWithAllDetailsSpecification(LessonQueryParams queryParams):base(P=>((string.IsNullOrEmpty(queryParams.SearchValue) || P.Title.ToLower().Contains(queryParams.SearchValue.ToLower()))))
            
         {
+            AddInclude(p => p.announcements);
+            AddInclude(p => p.comments);
+            AddInclude(p => p.course);
+            AddInclude(p => p.LessonVideos);
 
-            
             switch (queryParams.sortingOptions)
             {
                 case LessonSortingOptions.NameAscending:
@@ -28,7 +31,7 @@ namespace BusinessAccessLayes.Specification.Lessons
                     break;
             }
 
-            ApplyPagination(queryParams.PageIndex, queryParams.PageSize);
+            //ApplyPagination(queryParams.PageIndex, queryParams.PageSize);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Shared.DataTransferObjects.Announcements;
+using Shared.DataTransferObjects.Comments;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +15,15 @@ namespace Shared.DataTransferObjects.Lessons
         public string Title { get; set; }
         public string? Description { get; set; }
         public string? ImageName { get; set; }
+        public string? DocName { get; set; }
 
+        public string CourseName { get; set; } = null!;
+        public string LevelName { get; set; } = null!; // 👈 New field
+
+
+        public IEnumerable<AnnouncementDTO> Announcements { get; set; } = [];
+        public IEnumerable<CommentDTO> Comments { get; set; } = [];
+        public IEnumerable<string> Videos { get; set; } = [];
 
 
     }
