@@ -7,67 +7,31 @@ using DataAccessLayer.Models.Contents.Courses;
 using DataAccessLayer.Models.Contents.Exams;
 using DataAccessLayer.Models.Contents.Lessons;
 using DataAccessLayer.Models.Contents.Questions;
+using DataAccessLayer.Models.IdentityModels;
 using DataAccessLayer.Models.Levels;
 using DataAccessLayer.Models.Students;
 using DataAccessLayer.Models.Teachers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace DataAccessLayer.Data
 {
-    public class DataSeeding(MasaqDbContext _context) : IDataSeeding
+    public class DataSeeding(MasaqDbContext _context, UserManager<ApplicationUser> _usermanager, RoleManager<IdentityRole> _rolemanager) : IDataSeeding
     {
-        
+
         public async Task DataSeed()
         {
-            if ((await _context.Database.GetPendingMigrationsAsync()).Any())
-            {
-              await  _context.Database.MigrateAsync();
-            }
-            if (!_context.Admins.Any())
-            {
-                // --------------------- Seeding Admin ---------------------
-                List<Admin> admins = new List<Admin>()
-                {
-                   new Admin
-                   {
-                       FName = "Alaa",
-                       LName = "Ibrahim",
-                       Gender = Gender.Female,
-                       email = "alaa.ali@gmail.com"
-                   },
-                   new Admin
-                   {
-                       FName = "Somaya",
-                       LName = "Mohamed",
-                       Gender = Gender.Female,
-                       email = "somaya.mohamed@gmail.com",
-                   }
-                };
-               await _context.Admins.AddRangeAsync(admins);
 
-            }
 
-            if (!_context.Teachers.Any())
-            {
-                // --------------------- Seeding Teacher ---------------------
-                var teacher = new Teacher
-                {
-                    FName = "محمد",
-                    LName = "صلاح",
-                    Gender = Gender.Male,
-                    email = "mohamedSalah@gmail.com",
-                    Age = 35,
-                    Address = "حي الهرم، الجيزة",
-                    City = "الجيزة",
-                    LastActive = DateTime.Now,
-                    IsDeleted = false,
 
-                };
 
-              await  _context.Teachers.AddAsync(teacher);
 
-            }
+            //if ((await _context.Database.GetPendingMigrationsAsync()).Any())
+            //{
+            //    await _context.Database.MigrateAsync();
+            //}
+
 
             if (!_context.Levels.Any())
             {
@@ -97,18 +61,199 @@ namespace DataAccessLayer.Data
                         IsDeleted = false
                     }
                 };
-              await  _context.Levels.AddRangeAsync(levels);
+                await _context.Levels.AddRangeAsync(levels);
+                await _context.SaveChangesAsync();
             }
 
-            if (!_context.Courses.Any())
-            {
-                // --------------------- Seeding Courses ---------------------
 
-                // --------------------- Add Courses to level 1 ---------------------
-                var level1 =await _context.Levels.FirstOrDefaultAsync(l => l.LevelNumber == 1);
-                if (level1 is not null)
+            if (!_rolemanager.Roles.Any())
+            {
+                var role1 = new IdentityRole("Teacher");
+                var role2 = new IdentityRole("Student");
+                await _rolemanager.CreateAsync(role1);
+                await _rolemanager.CreateAsync(role2);
+
+            }
+
+            if (!_usermanager.Users.Any()&&!_context.Students.Any())
+            {
+                var leveltake =  await _context.Levels.FirstOrDefaultAsync();
+                if (leveltake is null) throw new Exception("levels not found exception");
+                var user = new ApplicationUser()
                 {
-                    List<Course> courses = new List<Course>()
+                    UserName = "01558921123",
+                    Email = "01558921123@gmail.com",
+                    Role = "Student"
+                };
+                var user2 = new ApplicationUser()
+                {
+                    UserName = "Admin",
+                    Email = "Admin@gmail.com",
+                    Role = "Teacher"
+                };
+
+                await _usermanager.CreateAsync(user, "Pp@1234");
+                await _usermanager.CreateAsync(user2, "Pp@1234");
+                await _usermanager.AddToRoleAsync(user, "Student");
+                await _usermanager.AddToRoleAsync(user2, "Teacher");
+
+                var student1 = new Student()
+                {
+                    levelFK = leveltake.Id,
+                    PhoneNumber = "01558921123",
+                    ParentPhoneNumber = "01011920192",
+                    LastModified = DateTime.UtcNow,
+                    CreatedOn = DateTime.UtcNow,
+                    UserId = user.Id,
+                    Age = 24,
+                    FullName = "Ahmed Ashraf",
+                    Gender = Gender.Male,
+                    email = "01558921123@gmail.com",
+                    Address = "menofia Ashmon",
+                    City = "Minofia",
+                    LastActive = DateTime.UtcNow,
+                    Government = "menofia"
+
+
+
+                };
+
+                _context.Students.Add(student1);
+                await _context.SaveChangesAsync();
+
+
+
+                _context.ChangeTracker.Clear();
+
+                var existingTeacher = await _context.Teachers.FirstOrDefaultAsync(t => t.UserId == user2.Id);
+                if (existingTeacher == null)
+                {
+                    var teacher = new Teacher()
+                    {
+                        UserId = user2.Id,
+                        Age = 24,
+                        FullName = "Ahmed Ashraf",
+                        Gender = Gender.Male,
+                        email = "01558921123@gmail.com",
+                        Address = "menofia Ashmon",
+                        City = "Minofia",
+                        LastActive = DateTime.UtcNow,
+                    };
+                    _context.Teachers.Add(teacher);
+                    await _context.SaveChangesAsync();
+                    _context.ChangeTracker.Clear();
+                }
+
+                
+
+
+                //add list of students 
+                var studentInfos = new List<(string userName, string email, string phone, string parentPhone)>
+    {
+        ("01558921123", "01558921123@gmail.com", "01558921123", "01011920192"),
+        ("01558921124", "01558921124@gmail.com", "01558921124", "01011920193"),
+        ("01558921125", "01558921125@gmail.com", "01558921125", "01011920194"),
+        ("01558921126", "01558921126@gmail.com", "01558921126", "01011920195"),
+        ("01558921127", "01558921127@gmail.com", "01558921127", "01011920196"),
+        ("01558921128", "01558921128@gmail.com", "01558921128", "01011920197")
+    };
+
+                foreach (var (userName, email, phone, parentPhone) in studentInfos)
+                {
+                    var appUser = new ApplicationUser
+                    {
+                        UserName = userName,
+                        Email = email,
+                        Role = "Student"
+                    };
+
+                    var result = await _usermanager.CreateAsync(appUser, "Pp@1234");
+                    if (result.Succeeded)
+                    {
+                        await _usermanager.AddToRoleAsync(appUser, "Student");
+
+                        var student = new Student
+                        {
+                            levelFK = leveltake.Id,
+                            PhoneNumber = phone,
+                            ParentPhoneNumber = parentPhone,
+                            LastModified = DateTime.UtcNow,
+                            CreatedOn = DateTime.UtcNow,
+                            UserId = appUser.Id,
+                             Age = 24,
+                            FullName = "Ahmed Ashraf",
+                            Gender = Gender.Male,
+                            email = "01558921123@gmail.com",
+                            Address = "menofia Ashmon",
+                            City = "Minofia",
+                            LastActive = DateTime.UtcNow,
+                        };
+
+                        _context.Students.Add(student);
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+                //}
+
+
+                //if (!_context.Admins.Any())
+                //{
+                //    // --------------------- Seeding Admin ---------------------
+                //    List<Admin> admins = new List<Admin>()
+                //    {
+                //       new Admin
+                //       {
+                //           FName = "Alaa",
+                //           LName = "Ibrahim",
+                //           Gender = Gender.Female,
+                //           email = "alaa.ali@gmail.com"
+                //       },
+                //       new Admin
+                //       {
+                //           FName = "Somaya",
+                //           LName = "Mohamed",
+                //           Gender = Gender.Female,
+                //           email = "somaya.mohamed@gmail.com",
+                //       }
+                //    };
+                //   await _context.Admins.AddRangeAsync(admins);
+
+                //}
+
+                //if (!_context.Teachers.Any())
+                //{
+                //    // --------------------- Seeding Teacher ---------------------
+                //    var teacher = new Teacher
+                //    {
+                //        FName = "محمد",
+                //        LName = "صلاح",
+                //        Gender = Gender.Male,
+                //        email = "mohamedSalah@gmail.com",
+                //        Age = 35,
+                //        Address = "حي الهرم، الجيزة",
+                //        City = "الجيزة",
+                //        LastActive = DateTime.Now,
+                //        IsDeleted = false,
+
+                //    };
+
+                //  await  _context.Teachers.AddAsync(teacher);
+
+                //}
+
+               
+
+                if (!_context.Courses.Any())
+                {
+                    // --------------------- Seeding Courses ---------------------
+
+                    // --------------------- Add Courses to level 1 ---------------------
+                    var level1 = await _context.Levels.FirstOrDefaultAsync(l => l.LevelNumber == 1);
+                    if (level1 is not null)
+                    {
+                        List<Course> courses = new List<Course>()
                     {
                        new Course
                        {
@@ -133,46 +278,46 @@ namespace DataAccessLayer.Data
                           IsDeleted = false
                       }
                     };
-                  await  _context.Courses.AddRangeAsync(courses);
-                    // إضافة الـ Courses إلى الـ Level (للعلاقة)
-                    level1.Courses.Add(courses[0]);
-                    level1.Courses.Add(courses[1]);
+                        await _context.Courses.AddRangeAsync(courses);
+                        // إضافة الـ Courses إلى الـ Level (للعلاقة)
+                        level1.Courses.Add(courses[0]);
+                        level1.Courses.Add(courses[1]);
 
-                }
-                // --------------------- Add Courses to level 2 ---------------------
-                var level2 =await _context.Levels.FirstOrDefaultAsync(l => l.LevelNumber == 2);
-                if (level2 is not null)
-                {
-                    var courseTerm1 = new Course
+                    }
+                    // --------------------- Add Courses to level 2 ---------------------
+                    var level2 = await _context.Levels.FirstOrDefaultAsync(l => l.LevelNumber == 2);
+                    if (level2 is not null)
                     {
-                        Title = "الترم الأول - تانية ثانوي",
-                        LevelFK = level2?.Id ?? 0, // ربط بالمستوى المضاف
-                        Level = level2,
-                        CreatedBy = 1,
-                        CreatedOn = DateTime.Now,
-                        LastModifiedBy = 1,
-                        LastModifiedOn = DateTime.Now,
-                        IsDeleted = false
-                    };
-                   await _context.Courses.AddAsync(courseTerm1);
-                    // إضافة الـ Courses إلى الـ Level (للعلاقة)
-                    level2.Courses.Add(courseTerm1);
+                        var courseTerm1 = new Course
+                        {
+                            Title = "الترم الأول - تانية ثانوي",
+                            LevelFK = level2?.Id ?? 0, // ربط بالمستوى المضاف
+                            Level = level2,
+                            CreatedBy = 1,
+                            CreatedOn = DateTime.Now,
+                            LastModifiedBy = 1,
+                            LastModifiedOn = DateTime.Now,
+                            IsDeleted = false
+                        };
+                        await _context.Courses.AddAsync(courseTerm1);
+                        // إضافة الـ Courses إلى الـ Level (للعلاقة)
+                        level2.Courses.Add(courseTerm1);
 
+                    }
                 }
-            }
 
-            if (!_context.Lessons.Any())
-            {
-                // --------------------- Seeding Lessons ---------------------
-                // --------------------- Add New Lessons for Course 1 level 1 ---------------------
-                var course1 = await _context.Courses.FirstOrDefaultAsync(c => c.Id == 1);
-                if (course1 is not null)
+                if (!_context.Lessons.Any())
                 {
+                    // --------------------- Seeding Lessons ---------------------
+                    // --------------------- Add New Lessons for Course 1 level 1 ---------------------
+                    var course1 = await _context.Courses.FirstOrDefaultAsync(c => c.Id == 1);
+                    if (course1 is not null)
+                    {
 
-                    var videos1 = new List<string> { "https://youtu.be/video1", "https://youtu.be/video2" };
-                    var videos2 = new List<string> { "https://youtu.be/video3", "https://youtu.be/video4" };
-                    var videos3 = new List<string> { "https://youtu.be/video5", "https://youtu.be/video6" };
-                    List<Lesson> lessons = new List<Lesson>()
+                        var videos1 = new List<string> { "https://youtu.be/video1", "https://youtu.be/video2" };
+                        var videos2 = new List<string> { "https://youtu.be/video3", "https://youtu.be/video4" };
+                        var videos3 = new List<string> { "https://youtu.be/video5", "https://youtu.be/video6" };
+                        List<Lesson> lessons = new List<Lesson>()
                     {
                            new Lesson
                            {
@@ -218,143 +363,91 @@ namespace DataAccessLayer.Data
                            }
                     };
 
-                  await  _context.Lessons.AddRangeAsync(lessons);
-                }
-                // --------------------- Add New Lessons for Course 2 level 1 ---------------------
-                var course2 =await _context.Courses.FirstOrDefaultAsync(c => c.Id == 2);
-                if (course2 is not null)
-                {
-                    var videos4 = new List<string> { "https://youtu.be/QwY1iiEUSLg", "https://youtu.be/nNyWzsPNddk" };
-                    var lesson4 = new Lesson
+                        await _context.Lessons.AddRangeAsync(lessons);
+                    }
+                    // --------------------- Add New Lessons for Course 2 level 1 ---------------------
+                    var course2 = await _context.Courses.FirstOrDefaultAsync(c => c.Id == 2);
+                    if (course2 is not null)
                     {
-                        Title = "المصادر",
-                        Description = "",
-                        ImageName = "محمد صلاح.jpg",
-                        //VideoName = videos4,
-                        DocName = null,
-                        CourseIdFK = course2.Id,
-                        CreatedBy = 1,
-                        CreatedOn = DateTime.Now,
-                        LastModifiedBy = 1,
-                        LastModifiedOn = DateTime.Now,
-                        IsDeleted = false
-                    };
-                   await _context.Lessons.AddAsync(lesson4);
+                        var videos4 = new List<string> { "https://youtu.be/QwY1iiEUSLg", "https://youtu.be/nNyWzsPNddk" };
+                        var lesson4 = new Lesson
+                        {
+                            Title = "المصادر",
+                            Description = "",
+                            ImageName = "محمد صلاح.jpg",
+                            //VideoName = videos4,
+                            DocName = null,
+                            CourseIdFK = course2.Id,
+                            CreatedBy = 1,
+                            CreatedOn = DateTime.Now,
+                            LastModifiedBy = 1,
+                            LastModifiedOn = DateTime.Now,
+                            IsDeleted = false
+                        };
+                        await _context.Lessons.AddAsync(lesson4);
 
-                }
+                    }
 
-                // --------------------- Add New Lessons for Course 1 in level 2 ---------------------
+                    // --------------------- Add New Lessons for Course 1 in level 2 ---------------------
 
-                var course =await _context.Courses.FirstOrDefaultAsync(l => l.Title.Contains("الترم الأول - تانية ثانوي"));
-                if (course is not null)
-                {
-                    List<string> Videos1 = new List<string>() {
+                    var course = await _context.Courses.FirstOrDefaultAsync(l => l.Title.Contains("الترم الأول - تانية ثانوي"));
+                    if (course is not null)
+                    {
+                        List<string> Videos1 = new List<string>() {
                     "https://youtu.be/EBzmsWWFQ3Q",
                     "https://youtu.be/glx0RZiuvcM",
                     "https://youtu.be/yNdhG3EGST4"
                    };
 
-                    var lesson1 = new Lesson
-                    {
-                        Title = "أدوات نصب الفعل المضارع بطريقة ممتعة",
-                        Description = "",
-                        ImageName = "محمد صلاح.jpg",
-                        //VideoName = Videos1,
-                        DocName = null,
-                        CourseIdFK = course.Id,
-                        course = course,
-                        CreatedBy = 1,
-                        CreatedOn = DateTime.Now,
-                        LastModifiedBy = 1,
-                        LastModifiedOn = DateTime.Now,
-                        IsDeleted = false
-                    };
+                        var lesson1 = new Lesson
+                        {
+                            Title = "أدوات نصب الفعل المضارع بطريقة ممتعة",
+                            Description = "",
+                            ImageName = "محمد صلاح.jpg",
+                            //VideoName = Videos1,
+                            DocName = null,
+                            CourseIdFK = course.Id,
+                            course = course,
+                            CreatedBy = 1,
+                            CreatedOn = DateTime.Now,
+                            LastModifiedBy = 1,
+                            LastModifiedOn = DateTime.Now,
+                            IsDeleted = false
+                        };
 
-                    List<string> Videos2 = new List<string>() {
+                        List<string> Videos2 = new List<string>() {
                     "https://youtu.be/QwY1iiEUSLg",
                     "https://youtu.be/nNyWzsPNddk",
                     };
-                    var lesson2 = new Lesson
-                    {
-                        Title = "المصادر",
-                        Description = "",
-                        ImageName = "محمد صلاح.jpg",
-                        //VideoName = Videos2,
-                        DocName = null,
-                        CourseIdFK = course.Id,
-                        course = course,
-                        CreatedBy = 1,
-                        CreatedOn = DateTime.Now,
-                        LastModifiedBy = 1,
-                        LastModifiedOn = DateTime.Now,
-                        IsDeleted = false
-                    };
+                        var lesson2 = new Lesson
+                        {
+                            Title = "المصادر",
+                            Description = "",
+                            ImageName = "محمد صلاح.jpg",
+                            //VideoName = Videos2,
+                            DocName = null,
+                            CourseIdFK = course.Id,
+                            course = course,
+                            CreatedBy = 1,
+                            CreatedOn = DateTime.Now,
+                            LastModifiedBy = 1,
+                            LastModifiedOn = DateTime.Now,
+                            IsDeleted = false
+                        };
 
-                   await _context.Lessons.AddRangeAsync(lesson1, lesson2);
-                    course.lessons.Add(lesson1);
-                    course.lessons.Add(lesson2);
+                        await _context.Lessons.AddRangeAsync(lesson1, lesson2);
+                        course.lessons.Add(lesson1);
+                        course.lessons.Add(lesson2);
 
+                    }
                 }
-            }
 
-            if (!_context.Students.Any())
-            {
-                // --------------------- Seeding Students ---------------------
-                // --------------------- Add Students level 1 ---------------------
-                var level1 =await _context.Levels.FirstOrDefaultAsync(l => l.LevelNumber == 1);
-                if (level1 is not null)
+              
+                // --------------------- Add New Announcements for Lesson 1 & 2 in Course 1 ---------------------
+                var Lesson1 = _context.Lessons.Include(l => l.announcements).Include(l => l.exams).FirstOrDefault(l => l.Id == 1);
+                if (Lesson1 is not null && !Lesson1.announcements.Any())
                 {
-                    if (!level1.Students.Any())
-                    {
-                        var students = new List<Student>
-                        {
-                           new Student { Age = 14, FName = "ياسر", LName = "حسين", Gender = Gender.Male, email = "yasser.hussein@example.com", Address = "حي النهضة", City = "المنصورة", LastActive = DateTime.Now, IsDeleted = false, Grade = 8, PhoneNumber = "01122334455", ParentPhoneNumber = "01122334456", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level1.Id, level = level1 },
-                           new Student { Age = 15, FName = "نسرين", LName = "عادل", Gender = Gender.Female, email = "nasreen.adel@example.com", Address = "شارع الجيش", City = "الإسماعيلية", LastActive = DateTime.Now, IsDeleted = false, Grade = 9, PhoneNumber = "01122334457", ParentPhoneNumber = "01122334458", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level1.Id, level = level1 },
-                           new Student { Age = 16, FName = "طارق", LName = "عزيز", Gender = Gender.Male, email = "tarek.aziz@example.com", Address = "حي الرحاب", City = "القاهرة", LastActive = DateTime.Now, IsDeleted = false, Grade = 10, PhoneNumber = "01122334459", ParentPhoneNumber = "01122334460", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level1.Id, level = level1 },
-                           new Student { Age = 17, FName = "لينا", LName = "فهمي", Gender = Gender.Female, email = "leena.fahmy@example.com", Address = "شارع المستقبل", City = "السويس", LastActive = DateTime.Now, IsDeleted = false, Grade = 11, PhoneNumber = "01122334461", ParentPhoneNumber = "01122334462", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level1.Id, level = level1 },
-                           new Student { Age = 14, FName = "خالد", LName = "عبدالرحمن", Gender = Gender.Male, email = "khalid.abdelrahman@example.com", Address = "حي الزهور", City = "المنوفية", LastActive = DateTime.Now, IsDeleted = false, Grade = 8, PhoneNumber = "01122334463", ParentPhoneNumber = "01122334464", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level1.Id, level = level1 },
-                           new Student { Age = 15, FName = "روان", LName = "إسماعيل", Gender = Gender.Female, email = "rawan.ismail@example.com", Address = "شارع النيل", City = "أسيوط", LastActive = DateTime.Now, IsDeleted = false, Grade = 9, PhoneNumber = "01122334465", ParentPhoneNumber = "01122334466", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level1.Id, level = level1 },
-                           new Student { Age = 16, FName = "سامي", LName = "نور", Gender = Gender.Male, email = "sami.noor@example.com", Address = "حي السلام", City = "الشرقية", LastActive = DateTime.Now, IsDeleted = false, Grade = 10, PhoneNumber = "01122334467", ParentPhoneNumber = "01122334468", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level1.Id, level = level1 },
-                           new Student { Age = 17, FName = "سلمى", LName = "شاكر", Gender = Gender.Female, email = "salma.shaker@example.com", Address = "شارع التحرير", City = "الفيوم", LastActive = DateTime.Now, IsDeleted = false, Grade = 11, PhoneNumber = "01122334469", ParentPhoneNumber = "01122334470", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level1.Id, level = level1},
-                           new Student { Age = 14, FName = "عادل", LName = "مصطفى", Gender = Gender.Male, email = "adel.mustafa@example.com", Address = "حي الورود", City = "بنها", LastActive = DateTime.Now, IsDeleted = false, Grade = 8, PhoneNumber = "01122334471", ParentPhoneNumber = "01122334472", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level1.Id, level = level1 },
-                           new Student { Age = 15, FName = "مريم", LName = "زكي", Gender = Gender.Female, email = "marriam.zaki@example.com", Address = "شارع الجزائر", City = "القاهرة", LastActive = DateTime.Now, IsDeleted = false, Grade = 9, PhoneNumber = "01122334473", ParentPhoneNumber = "01122334474", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level1.Id, level = level1 }
-                        };
-
-                        level1.NumberOfStudents = _context.Students.Count(s => s.levelFK == level1.Id) + students.Count;
-                       await _context.Students.AddRangeAsync(students);
-                    }
-                    // --------------------- Add Students level 2 ---------------------
-
-                    var level =await _context.Levels.FirstOrDefaultAsync(l => l.LevelNumber == 2);
-
-                    if (level is not null)
-                    {
-
-                        var students = new List<Student>
-                        {
-                             new Student { Age = 15, FName = "أحمد", LName = "محمد", Gender = Gender.Male, email = "ahmed.mohamed@example.com", Address = "شارع المعاهد", City = "القاهرة", LastActive = DateTime.Now, IsDeleted = false, Grade = 9, PhoneNumber = "01234567890", ParentPhoneNumber = "01234567891", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level.Id, level = level },
-                             new Student { Age = 16, FName = "سارة", LName = "علي", Gender = Gender.Female, email = "sarah.ali@example.com", Address = "حي الزهراء", City = "الإسكندرية", LastActive = DateTime.Now, IsDeleted = false, Grade = 10, PhoneNumber = "01234567892", ParentPhoneNumber = "01234567893", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level.Id, level = level },
-                             new Student { Age = 17, FName = "محمود", LName = "خالد", Gender = Gender.Male, email = "mahmoud.khaled@example.com", Address = "شارع الهرم", City = "الجيزة", LastActive = DateTime.Now, IsDeleted = false, Grade = 11, PhoneNumber = "01234567894", ParentPhoneNumber = "01234567895", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level.Id, level = level },
-                             new Student { Age = 15, FName = "ليلى", LName = "عبدالله", Gender = Gender.Female, email = "laila.abdullah@example.com", Address = "حي النصر", City = "القاهرة", LastActive = DateTime.Now, IsDeleted = false, Grade = 9, PhoneNumber = "01234567896", ParentPhoneNumber = "01234567897", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level.Id, level = level },
-                             new Student { Age = 16, FName = "يوسف", LName = "إبراهيم", Gender = Gender.Male, email = "youssef.ibrahim@example.com", Address = "شارع الجمهورية", City = "الإسكندرية", LastActive = DateTime.Now, IsDeleted = false, Grade = 10, PhoneNumber = "01234567898", ParentPhoneNumber = "01234567899", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level.Id, level = level },
-                             new Student { Age = 17, FName = "نورا", LName = "حسن", Gender = Gender.Female, email = "nora.hassan@example.com", Address = "حي السلام", City = "القاهرة", LastActive = DateTime.Now, IsDeleted = false, Grade = 11, PhoneNumber = "01234567900", ParentPhoneNumber = "01234567901", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level.Id, level = level },
-                             new Student { Age = 15, FName = "عمر", LName = "سعيد", Gender = Gender.Male, email = "omar.saeed@example.com", Address = "شارع الهرم", City = "الجيزة", LastActive = DateTime.Now, IsDeleted = false, Grade = 9, PhoneNumber = "01234567902", ParentPhoneNumber = "01234567903", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level.Id, level = level },
-                             new Student { Age = 16, FName = "هدى", LName = "عادل", Gender = Gender.Female, email = "huda.adel@example.com", Address = "حي الزيتون", City = "القاهرة", LastActive = DateTime.Now, IsDeleted = false, Grade = 10, PhoneNumber = "01234567904", ParentPhoneNumber = "01234567905", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level.Id, level = level },
-                             new Student { Age = 17, FName = "كريم", LName = "أحمد", Gender = Gender.Male, email = "karim.ahmed@example.com", Address = "شارع السادات", City = "الإسكندرية", LastActive = DateTime.Now, IsDeleted = false, Grade = 11, PhoneNumber = "01234567906", ParentPhoneNumber = "01234567907", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level.Id, level = level },
-                             new Student { Age = 15, FName = "ريم", LName = "فاروق", Gender = Gender.Female, email = "reem.farouk@example.com", Address = "حي المعادي", City = "القاهرة", LastActive = DateTime.Now, IsDeleted = false, Grade = 9, PhoneNumber = "01234567908", ParentPhoneNumber = "01234567909", CreationBy = 1, CreatedOn = DateTime.Now, LastModified = DateTime.Now, levelFK = level.Id, level = level }
-                        };
-
-                        level.NumberOfStudents = _context.Students.Count(s => s.levelFK == level.Id);
-                       await _context.Students.AddRangeAsync(students);
-
-                    }
-                }
-            }
-            // --------------------- Add New Announcements for Lesson 1 & 2 in Course 1 ---------------------
-            var Lesson1 = _context.Lessons.Include(l => l.announcements).Include(l => l.exams).FirstOrDefault(l => l.Id == 1);
-            if (Lesson1 is not null && !Lesson1.announcements.Any())
-            {
-                var announcements = new List<Announcement>()
+                    var announcements = new List<Announcement>()
                         {
                            new Announcement
                            {
@@ -381,13 +474,13 @@ namespace DataAccessLayer.Data
                                IsDeleted = false
                            }
                         };
-               await _context.Announcements.AddRangeAsync(announcements);
-            }
+                    await _context.Announcements.AddRangeAsync(announcements);
+                }
 
-            var Lesson2 = _context.Lessons.Include(l => l.announcements).Include(l => l.exams).FirstOrDefault(l => l.Id == 2);
-            if (Lesson2 is not null && !Lesson2.announcements.Any())
-            {
-                var announcements = new List<Announcement>()
+                var Lesson2 = _context.Lessons.Include(l => l.announcements).Include(l => l.exams).FirstOrDefault(l => l.Id == 2);
+                if (Lesson2 is not null && !Lesson2.announcements.Any())
+                {
+                    var announcements = new List<Announcement>()
                         {
                            new Announcement
                            {
@@ -414,59 +507,59 @@ namespace DataAccessLayer.Data
                                IsDeleted = false
                            },
                         };
-               await _context.Announcements.AddRangeAsync(announcements);
-            }
+                    await _context.Announcements.AddRangeAsync(announcements);
+                }
 
 
-            // --------------------- Add New Exams for Lesson 1 & 2 in Course 1 ---------------------
-            if (Lesson1 is not null && !Lesson1.exams.Any())
-            {
-                var exam = new Exam
+                // --------------------- Add New Exams for Lesson 1 & 2 in Course 1 ---------------------
+                if (Lesson1 is not null && !Lesson1.exams.Any())
                 {
-                    Duration = 60, // مدة بالدقائق
-                    Title = "اختبار أدوات نصب الفعل",
-                    Description = "اختبار لدرس أدوات نصب الفعل المضارع.",
-                    StartTime = DateTime.Now.AddDays(1), // غدًا
-                    EndTime = DateTime.Now.AddDays(1).AddHours(1), // بعد ساعة من البداية
-                    IsCompleted = false,
-                    Status = null,
-                    IsAvaliable = true,
-                    LessonId = Lesson1.Id, // ربط بالدرس الأول
-                    CreatedBy = 1,
-                    CreatedOn = DateTime.Now,
-                    LastModifiedBy = 1,
-                    LastModifiedOn = DateTime.Now,
-                    IsDeleted = false
-                };
-              await  _context.Exams.AddRangeAsync(exam);
-            }
-            if (Lesson2 is not null && !Lesson2.exams.Any())
-            {
-                var exam = new Exam
+                    var exam = new Exam
+                    {
+                        Duration = 60, // مدة بالدقائق
+                        Title = "اختبار أدوات نصب الفعل",
+                        Description = "اختبار لدرس أدوات نصب الفعل المضارع.",
+                        StartTime = DateTime.Now.AddDays(1), // غدًا
+                        EndTime = DateTime.Now.AddDays(1).AddHours(1), // بعد ساعة من البداية
+                        IsCompleted = false,
+                        Status = null,
+                        IsAvaliable = true,
+                        LessonId = Lesson1.Id, // ربط بالدرس الأول
+                        CreatedBy = 1,
+                        CreatedOn = DateTime.Now,
+                        LastModifiedBy = 1,
+                        LastModifiedOn = DateTime.Now,
+                        IsDeleted = false
+                    };
+                    await _context.Exams.AddRangeAsync(exam);
+                }
+                if (Lesson2 is not null && !Lesson2.exams.Any())
                 {
-                    Duration = 60, // مدة بالدقائق
-                    Title = "اختبار التوكيد",
-                    Description = "اختبار التوكيد.",
-                    StartTime = DateTime.Now.AddDays(1), // غدًا
-                    EndTime = DateTime.Now.AddDays(1).AddHours(1), // بعد ساعة من البداية
-                    IsCompleted = false,
-                    Status = null,
-                    IsAvaliable = true,
-                    LessonId = Lesson2.Id, // ربط بالدرس الأول
-                    CreatedBy = 1,
-                    CreatedOn = DateTime.Now,
-                    LastModifiedBy = 1,
-                    LastModifiedOn = DateTime.Now,
-                    IsDeleted = false
-                };
-              await  _context.Exams.AddRangeAsync(exam);
-            }
+                    var exam = new Exam
+                    {
+                        Duration = 60, // مدة بالدقائق
+                        Title = "اختبار التوكيد",
+                        Description = "اختبار التوكيد.",
+                        StartTime = DateTime.Now.AddDays(1), // غدًا
+                        EndTime = DateTime.Now.AddDays(1).AddHours(1), // بعد ساعة من البداية
+                        IsCompleted = false,
+                        Status = null,
+                        IsAvaliable = true,
+                        LessonId = Lesson2.Id, // ربط بالدرس الأول
+                        CreatedBy = 1,
+                        CreatedOn = DateTime.Now,
+                        LastModifiedBy = 1,
+                        LastModifiedOn = DateTime.Now,
+                        IsDeleted = false
+                    };
+                    await _context.Exams.AddRangeAsync(exam);
+                }
 
-            // --------------------- Add Questions for exam of lesson 1 ---------------------
-            var exam1 =await _context.Exams.Include(e => e.questions).FirstOrDefaultAsync(e => e.Id == 1);
-            if (exam1 is not null && !exam1.questions.Any())
-            {
-                var questions = new List<Question>()
+                // --------------------- Add Questions for exam of lesson 1 ---------------------
+                var exam1 = await _context.Exams.Include(e => e.questions).FirstOrDefaultAsync(e => e.Id == 1);
+                if (exam1 is not null && !exam1.questions.Any())
+                {
+                    var questions = new List<Question>()
                         {
                            new Question
                            {
@@ -503,14 +596,14 @@ namespace DataAccessLayer.Data
                                IsDeleted = false
                            }
                         };
-                await _context.Questions.AddRangeAsync(questions);
-            }
+                    await _context.Questions.AddRangeAsync(questions);
+                }
 
-            // --------------------- Add Questions for exam of lesson 2 ---------------------
-            var exam2 =await _context.Exams.Include(e => e.questions).FirstOrDefaultAsync(e => e.Id == 2);
-            if (exam2 is not null && !exam2.questions.Any())
-            {
-                var questions = new List<Question>()
+                // --------------------- Add Questions for exam of lesson 2 ---------------------
+                var exam2 = await _context.Exams.Include(e => e.questions).FirstOrDefaultAsync(e => e.Id == 2);
+                if (exam2 is not null && !exam2.questions.Any())
+                {
+                    var questions = new List<Question>()
                         {
                            new Question
                            {
@@ -547,11 +640,11 @@ namespace DataAccessLayer.Data
                                IsDeleted = false
                            }
                         };
-              await  _context.Questions.AddRangeAsync(questions);
+                    await _context.Questions.AddRangeAsync(questions);
+                }
+
+                await _context.SaveChangesAsync();
+
             }
-
-          await  _context.SaveChangesAsync();
-
         }
     }
-}
