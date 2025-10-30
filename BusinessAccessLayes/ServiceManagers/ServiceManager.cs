@@ -19,5 +19,7 @@ namespace BusinessAccessLayes.ServiceManagers
         public ILessonService LessonService => _lazyLessonService.Value;
         public IAnncouncementService AnnouncementService => _lazyAnnouncementService.Value;
         public ICommentService CommentService => _lazyCommentService.Value;
+
+    
     }
 }
