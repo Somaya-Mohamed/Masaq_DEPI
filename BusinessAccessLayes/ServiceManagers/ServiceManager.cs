@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace BusinessAccessLayes.ServiceManagers
 {
+
     public class ServiceManager(IUnitOfWork _unitOfWork,IMapper _mapper , MasaqDbContext _context , UserManager<ApplicationUser> _usermanager , IConfiguration _config) : IServiceManager
     {
         private readonly Lazy<ILessonService> _lazyLessonService = new Lazy<ILessonService>(() => new LessonService(_unitOfWork, _mapper));
