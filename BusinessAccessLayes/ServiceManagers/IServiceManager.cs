@@ -12,10 +12,10 @@ namespace BusinessAccessLayes.ServiceManagers
     {
         public ILessonService LessonService { get; }
 
-        // --- ده الكود المدمج ---
-        public IAuthenticationService AuthenticationService { get; }
         public IAnncouncementService AnnouncementService { get; }
         public ICommentService CommentService { get; }
+        // --- ده الكود المدمج ---
+        //public IAuthenticationService AuthenticationService { get; }
 
     }
 }

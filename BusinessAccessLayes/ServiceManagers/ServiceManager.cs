@@ -16,6 +16,8 @@ namespace BusinessAccessLayes.ServiceManagers
         private readonly Lazy<ILessonService> _lazyLessonService = new Lazy<ILessonService>(() => new LessonService(_unitOfWork, _mapper));
         private readonly Lazy<IAnncouncementService> _lazyAnnouncementService = new Lazy<IAnncouncementService>(() => new AnnouncementService(_unitOfWork, _mapper));
         private readonly Lazy<ICommentService> _lazyCommentService = new Lazy<ICommentService>(() => new CommentService(_unitOfWork, _mapper));
+
+
         public ILessonService LessonService => _lazyLessonService.Value;
         public IAnncouncementService AnnouncementService => _lazyAnnouncementService.Value;
         public ICommentService CommentService => _lazyCommentService.Value;
