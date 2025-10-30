@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection.Metadata;
 using System.Text;
 
 namespace Masaq_app
@@ -24,7 +23,7 @@ namespace Masaq_app
         {
             var builder = WebApplication.CreateBuilder(args);
 
-         
+
 
             // Add services to the container.
 
@@ -75,7 +74,7 @@ namespace Masaq_app
                 };
 
             });
-           
+
 
 
             builder.Services.AddScoped<IDataSeeding, DataSeeding>();
@@ -83,7 +82,7 @@ namespace Masaq_app
             builder.Services.AddAutoMapper(cong => cong.AddProfile(new LessonProfile()), typeof(AssembblyReference).Assembly);
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-            
+
             var app = builder.Build();
 
             #region Data seeding
