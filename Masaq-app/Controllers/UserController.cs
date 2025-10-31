@@ -4,6 +4,9 @@ using Shared.DataTransferObjects.Users;
 
 namespace Masaq_app.Controllers
 {
+    // [Authorize]
+    [ApiController]
+    [Route("api/[controller]")]
     public class UserController(IServiceManager _serviceManager) : ControllerBase
     {
         [HttpGet("all")]
