@@ -1,10 +1,4 @@
 ﻿using BusinessAccessLayes.Services.Interfaces;
-using Microsoft.AspNetCore.Authentication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessAccessLayes.ServiceManagers
 {
@@ -14,5 +8,8 @@ namespace BusinessAccessLayes.ServiceManagers
         public IAnncouncementService AnnouncementService { get; }
         public ICommentService CommentService { get; }
         public BusinessAccessLayes.Services.Interfaces.IAuthenticationService AuthenticationService { get; }
+        public IUserService UserService { get; }
+        public IRoleService RoleService { get; }
+
     }
 }

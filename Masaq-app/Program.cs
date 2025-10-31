@@ -4,6 +4,7 @@ using BusinessAccessLayes.Mapping_Profiles;
 using BusinessAccessLayes.ServiceManagers;
 using BusinessAccessLayes.Services.Classes;
 using BusinessAccessLayes.Services.Interfaces;
+using BusinessAccessLayes.Settings;
 using DataAccessLayer.Contracts;
 using DataAccessLayer.Data;
 using DataAccessLayer.Data.Contexts;
@@ -43,9 +44,15 @@ namespace Masaq_app
                 config.Password.RequireLowercase = false;
                 config.Password.RequireUppercase = false;
 
-            }).AddEntityFrameworkStores<MasaqDbContext>();
+            }).AddEntityFrameworkStores<MasaqDbContext>()
+              .AddDefaultTokenProviders();
 
+            #region EmailSetting
+            builder.Services.Configure<EmailSettings>(
+            builder.Configuration.GetSection("EmailSettings"));
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
+            #endregion
             builder.Services.AddDbContext<MasaqDbContext>(options =>
            {
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -82,6 +89,7 @@ namespace Masaq_app
             builder.Services.AddAutoMapper(cong => cong.AddProfile(new LessonProfile()), typeof(AssembblyReference).Assembly);
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
 
             var app = builder.Build();
 
