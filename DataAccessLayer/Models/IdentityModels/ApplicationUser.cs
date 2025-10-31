@@ -6,7 +6,7 @@ namespace DataAccessLayer.Models.IdentityModels
 {
     public class ApplicationUser : IdentityUser
     {
-        public string Role { get; set; }
+        //public string Role { get; set; }
         public string FullName { get; set; }
 
         public Student? student { get; set; }

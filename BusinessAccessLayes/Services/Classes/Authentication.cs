@@ -40,18 +40,23 @@ namespace BusinessAccessLayes.Services.Classes
         {
             var user = new ApplicationUser()
             {
-                Role = "Student",
-                UserName = registerRequest.UserName,
+                UserName = registerRequest.PhoneNumber,
                 Email = registerRequest.Email,
                 PhoneNumber = registerRequest.PhoneNumber,
                 FullName = registerRequest.FullName,
-
-
             };
             var res = await _usermanager.CreateAsync(user, registerRequest.Password);
             if (!res.Succeeded)
             {
                 throw new Exception(string.Join(", ", res.Errors.Select(e => e.Description)));
+            }
+            if (!await _dbContext.Roles.AnyAsync(r => r.Name == "Student"))
+            {
+                await _usermanager.AddToRoleAsync(user, "Student");
+            }
+            else
+            {
+                await _usermanager.AddToRoleAsync(user, "Student");
             }
             var stu = new Student()
             {
@@ -130,7 +135,6 @@ namespace BusinessAccessLayes.Services.Classes
             if (user == null) throw new Exception("User not found.");
 
             var token = await _usermanager.GeneratePasswordResetTokenAsync(user);
-            //string resetLink = $"https://yourfrontend.com/reset-password?email={email}&token={WebUtility.UrlEncode(token)}";
             string resetLink = $"https://localhost:7182/api/Authontication/reset-password?email={email}&token={token}";
 
             string subject = "Password Reset Request";

@@ -31,11 +31,13 @@ namespace Masaq_app
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
+
+            #region Add Authorization to Swagger
+
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new() { Title = "Masaq API", Version = "v1" });
 
-                // 🔐 تعريف الـ JWT Security Scheme
                 options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -46,7 +48,6 @@ namespace Masaq_app
                     Description = "Enter JWT token like: Bearer {your token here}"
                 });
 
-                // ✅ السماح بإرسال الـ Token في كل Request
                 options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
                 {
                     {
@@ -62,6 +63,7 @@ namespace Masaq_app
                     }
                 });
             });
+            #endregion
 
 
 

@@ -1,10 +1,11 @@
 ﻿using BusinessAccessLayes.ServiceManagers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DataTransferObjects.Users;
 
 namespace Masaq_app.Controllers
 {
-    // [Authorize]
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class UserController(IServiceManager _serviceManager) : ControllerBase
