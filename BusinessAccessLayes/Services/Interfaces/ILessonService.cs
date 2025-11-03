@@ -30,11 +30,13 @@ namespace BusinessAccessLayes.Services.Interfaces
         //////////
 
         Task<IEnumerable<LessonDTO>> GetAllLessonsAsync([FromQuery] LessonQueryParams queryParams);
-         
 
+        //////////
+        Task<IEnumerable<LessonDTO>> GetLessonsByCourseAsync(int courseId);
 
 
 
 
     }
 }
+
