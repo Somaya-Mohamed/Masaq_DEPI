@@ -5,7 +5,7 @@ using Shared.DataTransferObjects.Roles;
 
 namespace Masaq_app.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class RoleController : ControllerBase

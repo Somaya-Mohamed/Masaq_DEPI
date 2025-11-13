@@ -23,6 +23,8 @@ namespace BusinessAccessLayes.ServiceManagers
         private readonly Lazy<IUserService> _lazyUserService = new(() => new UserService(_usermanager, _mapper, _context));
         private readonly Lazy<IRoleService> _lazyRoleService = new(() => new RoleService(_roleManager, _mapper));
 
+        private readonly Lazy<ICourseService> _lazyCourseService = new(() => new CourseService(_unitOfWork, _mapper));
+
         public IAuthenticationService AuthenticationService => _AuthenticationService.Value;
 
         public IAnncouncementService AnnouncementService => _lazyAnnouncementService.Value;
@@ -30,6 +32,8 @@ namespace BusinessAccessLayes.ServiceManagers
         public ICommentService CommentService => _lazyCommentService.Value;
         public IUserService UserService => _lazyUserService.Value;
         public IRoleService RoleService => _lazyRoleService.Value;
+
+        public ICourseService CourseService => _lazyCourseService.Value;
 
 
     }

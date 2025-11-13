@@ -13,6 +13,7 @@ using DataAccessLayer.Repositories.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -123,6 +124,11 @@ namespace Masaq_app
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IRoleService, RoleService>();
+
+            builder.Services.AddScoped<ICourseService, CourseService>(); 
+            builder.Services.AddAutoMapper(cong => cong.AddProfile(new CourseProfile()), typeof(AssembblyReference).Assembly);
+            builder.Services.AddScoped<IEmailService, EmailService>(); 
+
 
             var app = builder.Build();
 

@@ -66,5 +66,17 @@ namespace BusinessAccessLayes.Services.Classes
         }
 
 
+
+        public async Task<IEnumerable<LessonDTO>> GetLessonsByCourseAsync(int courseId)
+        {
+            var repo = unitOfWork.GetRepository<Lesson, int>();
+
+
+            var specification = new LessonsByCourseSpecification(courseId);
+            var lessons = await repo.GetAllAsync(specification);
+
+            return mapper.Map<IEnumerable<LessonDTO>>(lessons);
+        }
+
     }
 }

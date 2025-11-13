@@ -10,6 +10,10 @@ namespace BusinessAccessLayes.ServiceManagers
         public BusinessAccessLayes.Services.Interfaces.IAuthenticationService AuthenticationService { get; }
         public IUserService UserService { get; }
         public IRoleService RoleService { get; }
+        ICourseService CourseService { get; }
 
     }
 }
+
+
+

@@ -19,18 +19,9 @@ namespace DataAccessLayer.Data
         {
 
 
-
-
-
-            //if ((await _context.Database.GetPendingMigrationsAsync()).Any())
-            //{
-            //    await _context.Database.MigrateAsync();
-            //}
-
-
+                // --------------------- Seeding Levels ---------------------
             if (!_context.Levels.Any())
             {
-                // --------------------- Seeding Levels ---------------------
                 List<Level> levels = new List<Level>()
                 {
                     new Level
@@ -54,192 +45,24 @@ namespace DataAccessLayer.Data
                         LastModifiedBy = 1,
                         LastModifiedOn = DateTime.Now,
                         IsDeleted = false
+                    },
+                    new Level
+                    {
+                        LevelNumber = 3,
+                        NumberOfStudents = 0,
+                        AcademicYear = "2026-2027",
+                        CreatedBy = 1,
+                        CreatedOn = DateTime.Now,
+                        LastModifiedBy = 1,
+                        LastModifiedOn = DateTime.Now,
+                        IsDeleted = false
                     }
                 };
                 await _context.Levels.AddRangeAsync(levels);
                 await _context.SaveChangesAsync();
             }
 
-
-            //        if (!_rolemanager.Roles.Any())
-            //        {
-            //            var role1 = new IdentityRole("Teacher");
-            //            var role2 = new IdentityRole("Student");
-            //            await _rolemanager.CreateAsync(role1);
-            //            await _rolemanager.CreateAsync(role2);
-
-            //        }
-
-            //        if (!_usermanager.Users.Any()&&!_context.Students.Any())
-            //        {
-            //            var leveltake =  await _context.Levels.FirstOrDefaultAsync();
-            //            if (leveltake is null) throw new Exception("levels not found exception");
-            //            var user = new ApplicationUser()
-            //            {
-            //                UserName = "01558921123",
-            //                Email = "01558921123@gmail.com",
-            //                Role = "Student"
-            //            };
-            //            var user2 = new ApplicationUser()
-            //            {
-            //                UserName = "Admin",
-            //                Email = "Admin@gmail.com",
-            //                Role = "Teacher"
-            //            };
-
-            //            await _usermanager.CreateAsync(user, "Pp@1234");
-            //            await _usermanager.CreateAsync(user2, "Pp@1234");
-            //            await _usermanager.AddToRoleAsync(user, "Student");
-            //            await _usermanager.AddToRoleAsync(user2, "Teacher");
-
-            //            var student1 = new Student()
-            //            {
-            //                levelFK = leveltake.Id,
-            //                PhoneNumber = "01558921123",
-            //                ParentPhoneNumber = "01011920192",
-            //                LastModified = DateTime.UtcNow,
-            //                CreatedOn = DateTime.UtcNow,
-            //                UserId = user.Id,
-            //                Age = 24,
-            //                FullName = "Ahmed Ashraf",
-            //                Gender = Gender.Male,
-            //                email = "01558921123@gmail.com",
-            //                Address = "menofia Ashmon",
-            //                City = "Minofia",
-            //                LastActive = DateTime.UtcNow,
-            //                Government = "menofia"
-
-
-
-            //            };
-
-            //            _context.Students.Add(student1);
-            //            await _context.SaveChangesAsync();
-
-
-
-            //            _context.ChangeTracker.Clear();
-
-            //            var existingTeacher = await _context.Teachers.FirstOrDefaultAsync(t => t.UserId == user2.Id);
-            //            if (existingTeacher == null)
-            //            {
-            //                var teacher = new Teacher()
-            //                {
-            //                    UserId = user2.Id,
-            //                    Age = 24,
-            //                    FullName = "Ahmed Ashraf",
-            //                    Gender = Gender.Male,
-            //                    email = "01558921123@gmail.com",
-            //                    Address = "menofia Ashmon",
-            //                    City = "Minofia",
-            //                    LastActive = DateTime.UtcNow,
-            //                };
-            //                _context.Teachers.Add(teacher);
-            //                await _context.SaveChangesAsync();
-            //                _context.ChangeTracker.Clear();
-            //            }
-
-
-
-
-            //            //add list of students 
-            //            var studentInfos = new List<(string userName, string email, string phone, string parentPhone)>
-            //{
-            //    ("01558921123", "01558921123@gmail.com", "01558921123", "01011920192"),
-            //    ("01558921124", "01558921124@gmail.com", "01558921124", "01011920193"),
-            //    ("01558921125", "01558921125@gmail.com", "01558921125", "01011920194"),
-            //    ("01558921126", "01558921126@gmail.com", "01558921126", "01011920195"),
-            //    ("01558921127", "01558921127@gmail.com", "01558921127", "01011920196"),
-            //    ("01558921128", "01558921128@gmail.com", "01558921128", "01011920197")
-            //};
-
-            //            foreach (var (userName, email, phone, parentPhone) in studentInfos)
-            //            {
-            //                var appUser = new ApplicationUser
-            //                {
-            //                    UserName = userName,
-            //                    Email = email,
-            //                    Role = "Student"
-            //                };
-
-            //                var result = await _usermanager.CreateAsync(appUser, "Pp@1234");
-            //                if (result.Succeeded)
-            //                {
-            //                    await _usermanager.AddToRoleAsync(appUser, "Student");
-
-            //                    var student = new Student
-            //                    {
-            //                        levelFK = leveltake.Id,
-            //                        PhoneNumber = phone,
-            //                        ParentPhoneNumber = parentPhone,
-            //                        LastModified = DateTime.UtcNow,
-            //                        CreatedOn = DateTime.UtcNow,
-            //                        UserId = appUser.Id,
-            //                         Age = 24,
-            //                        FullName = "Ahmed Ashraf",
-            //                        Gender = Gender.Male,
-            //                        email = "01558921123@gmail.com",
-            //                        Address = "menofia Ashmon",
-            //                        City = "Minofia",
-            //                        LastActive = DateTime.UtcNow,
-            //                    };
-
-            //                    _context.Students.Add(student);
-            //                    await _context.SaveChangesAsync();
-            //                }
-            //            }
-            //        }
-
-            //}
-
-
-            //if (!_context.Admins.Any())
-            //{
-            //    // --------------------- Seeding Admin ---------------------
-            //    List<Admin> admins = new List<Admin>()
-            //    {
-            //       new Admin
-            //       {
-            //           FName = "Alaa",
-            //           LName = "Ibrahim",
-            //           Gender = Gender.Female,
-            //           email = "alaa.ali@gmail.com"
-            //       },
-            //       new Admin
-            //       {
-            //           FName = "Somaya",
-            //           LName = "Mohamed",
-            //           Gender = Gender.Female,
-            //           email = "somaya.mohamed@gmail.com",
-            //       }
-            //    };
-            //   await _context.Admins.AddRangeAsync(admins);
-
-            //}
-
-            //if (!_context.Teachers.Any())
-            //{
-            //    // --------------------- Seeding Teacher ---------------------
-            //    var teacher = new Teacher
-            //    {
-            //        FName = "محمد",
-            //        LName = "صلاح",
-            //        Gender = Gender.Male,
-            //        email = "mohamedSalah@gmail.com",
-            //        Age = 35,
-            //        Address = "حي الهرم، الجيزة",
-            //        City = "الجيزة",
-            //        LastActive = DateTime.Now,
-            //        IsDeleted = false,
-
-            //    };
-
-            //  await  _context.Teachers.AddAsync(teacher);
-
-            //}
-
-
-
+            // --------------------- Seeding Courses ---------------------
             if (!_context.Courses.Any())
             {
                 // --------------------- Seeding Courses ---------------------
@@ -301,6 +124,8 @@ namespace DataAccessLayer.Data
                 }
             }
 
+
+            // --------------------- Seeding Lessons ---------------------
             if (!_context.Lessons.Any())
             {
                 // --------------------- Seeding Lessons ---------------------
@@ -643,3 +468,195 @@ namespace DataAccessLayer.Data
         }
     }
 }
+
+
+
+
+
+
+
+
+//if ((await _context.Database.GetPendingMigrationsAsync()).Any())
+//{
+//    await _context.Database.MigrateAsync();
+//}
+
+
+
+//        if (!_rolemanager.Roles.Any())
+//        {
+//            var role1 = new IdentityRole("Teacher");
+//            var role2 = new IdentityRole("Student");
+//            await _rolemanager.CreateAsync(role1);
+//            await _rolemanager.CreateAsync(role2);
+
+//        }
+
+//        if (!_usermanager.Users.Any()&&!_context.Students.Any())
+//        {
+//            var leveltake =  await _context.Levels.FirstOrDefaultAsync();
+//            if (leveltake is null) throw new Exception("levels not found exception");
+//            var user = new ApplicationUser()
+//            {
+//                UserName = "01558921123",
+//                Email = "01558921123@gmail.com",
+//                Role = "Student"
+//            };
+//            var user2 = new ApplicationUser()
+//            {
+//                UserName = "Admin",
+//                Email = "Admin@gmail.com",
+//                Role = "Teacher"
+//            };
+
+//            await _usermanager.CreateAsync(user, "Pp@1234");
+//            await _usermanager.CreateAsync(user2, "Pp@1234");
+//            await _usermanager.AddToRoleAsync(user, "Student");
+//            await _usermanager.AddToRoleAsync(user2, "Teacher");
+
+//            var student1 = new Student()
+//            {
+//                levelFK = leveltake.Id,
+//                PhoneNumber = "01558921123",
+//                ParentPhoneNumber = "01011920192",
+//                LastModified = DateTime.UtcNow,
+//                CreatedOn = DateTime.UtcNow,
+//                UserId = user.Id,
+//                Age = 24,
+//                FullName = "Ahmed Ashraf",
+//                Gender = Gender.Male,
+//                email = "01558921123@gmail.com",
+//                Address = "menofia Ashmon",
+//                City = "Minofia",
+//                LastActive = DateTime.UtcNow,
+//                Government = "menofia"
+
+
+
+//            };
+
+//            _context.Students.Add(student1);
+//            await _context.SaveChangesAsync();
+
+
+
+//            _context.ChangeTracker.Clear();
+
+//            var existingTeacher = await _context.Teachers.FirstOrDefaultAsync(t => t.UserId == user2.Id);
+//            if (existingTeacher == null)
+//            {
+//                var teacher = new Teacher()
+//                {
+//                    UserId = user2.Id,
+//                    Age = 24,
+//                    FullName = "Ahmed Ashraf",
+//                    Gender = Gender.Male,
+//                    email = "01558921123@gmail.com",
+//                    Address = "menofia Ashmon",
+//                    City = "Minofia",
+//                    LastActive = DateTime.UtcNow,
+//                };
+//                _context.Teachers.Add(teacher);
+//                await _context.SaveChangesAsync();
+//                _context.ChangeTracker.Clear();
+//            }
+
+
+
+
+//            //add list of students 
+//            var studentInfos = new List<(string userName, string email, string phone, string parentPhone)>
+//{
+//    ("01558921123", "01558921123@gmail.com", "01558921123", "01011920192"),
+//    ("01558921124", "01558921124@gmail.com", "01558921124", "01011920193"),
+//    ("01558921125", "01558921125@gmail.com", "01558921125", "01011920194"),
+//    ("01558921126", "01558921126@gmail.com", "01558921126", "01011920195"),
+//    ("01558921127", "01558921127@gmail.com", "01558921127", "01011920196"),
+//    ("01558921128", "01558921128@gmail.com", "01558921128", "01011920197")
+//};
+
+//            foreach (var (userName, email, phone, parentPhone) in studentInfos)
+//            {
+//                var appUser = new ApplicationUser
+//                {
+//                    UserName = userName,
+//                    Email = email,
+//                    Role = "Student"
+//                };
+
+//                var result = await _usermanager.CreateAsync(appUser, "Pp@1234");
+//                if (result.Succeeded)
+//                {
+//                    await _usermanager.AddToRoleAsync(appUser, "Student");
+
+//                    var student = new Student
+//                    {
+//                        levelFK = leveltake.Id,
+//                        PhoneNumber = phone,
+//                        ParentPhoneNumber = parentPhone,
+//                        LastModified = DateTime.UtcNow,
+//                        CreatedOn = DateTime.UtcNow,
+//                        UserId = appUser.Id,
+//                         Age = 24,
+//                        FullName = "Ahmed Ashraf",
+//                        Gender = Gender.Male,
+//                        email = "01558921123@gmail.com",
+//                        Address = "menofia Ashmon",
+//                        City = "Minofia",
+//                        LastActive = DateTime.UtcNow,
+//                    };
+
+//                    _context.Students.Add(student);
+//                    await _context.SaveChangesAsync();
+//                }
+//            }
+//        }
+
+//}
+
+
+//if (!_context.Admins.Any())
+//{
+//    // --------------------- Seeding Admin ---------------------
+//    List<Admin> admins = new List<Admin>()
+//    {
+//       new Admin
+//       {
+//           FName = "Alaa",
+//           LName = "Ibrahim",
+//           Gender = Gender.Female,
+//           email = "alaa.ali@gmail.com"
+//       },
+//       new Admin
+//       {
+//           FName = "Somaya",
+//           LName = "Mohamed",
+//           Gender = Gender.Female,
+//           email = "somaya.mohamed@gmail.com",
+//       }
+//    };
+//   await _context.Admins.AddRangeAsync(admins);
+
+//}
+
+//if (!_context.Teachers.Any())
+//{
+//    // --------------------- Seeding Teacher ---------------------
+//    var teacher = new Teacher
+//    {
+//        FName = "محمد",
+//        LName = "صلاح",
+//        Gender = Gender.Male,
+//        email = "mohamedSalah@gmail.com",
+//        Age = 35,
+//        Address = "حي الهرم، الجيزة",
+//        City = "الجيزة",
+//        LastActive = DateTime.Now,
+//        IsDeleted = false,
+
+//    };
+
+//  await  _context.Teachers.AddAsync(teacher);
+
+//}
+
