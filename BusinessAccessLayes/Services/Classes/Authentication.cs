@@ -7,17 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Shared.DataTransferObjects.Authentication;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessAccessLayes.Services.Classes
 {
-    public class Authentication(UserManager<ApplicationUser> _usermanager , MasaqDbContext _dbContext , IConfiguration _config) : IAuthenticationService
+    public class Authentication(UserManager<ApplicationUser> _usermanager, MasaqDbContext _dbContext, IConfiguration _config, IEmailService _emailService) : IAuthenticationService
     {
         public async Task<UserResponce> Login(LoginRequest loginRequest)
         {
@@ -25,7 +21,7 @@ namespace BusinessAccessLayes.Services.Classes
             var user = await _dbContext.Students.FirstOrDefaultAsync(s => s.PhoneNumber == loginRequest.phoneNumber);
             var appuser = await _usermanager.FindByIdAsync(user.UserId);
 
-            var res =await _usermanager.CheckPasswordAsync(appuser, loginRequest.password);
+            var res = await _usermanager.CheckPasswordAsync(appuser, loginRequest.password);
             if (!res)
             {
                 throw new UnauthorizedAccessException();
@@ -33,7 +29,7 @@ namespace BusinessAccessLayes.Services.Classes
 
             return new UserResponce()
             {
-                UserName = user.FullName,
+                FullName = user.FullName,
                 phonenumber = user.PhoneNumber,
                 Token = await generateJwtToken(user)
 
@@ -44,24 +40,33 @@ namespace BusinessAccessLayes.Services.Classes
         {
             var user = new ApplicationUser()
             {
-                Role = "Student",
                 UserName = registerRequest.PhoneNumber,
-                Email = registerRequest.PhoneNumber + "@gmail.com"
-
+                Email = registerRequest.Email,
+                PhoneNumber = registerRequest.PhoneNumber,
+                FullName = registerRequest.FullName,
             };
-            var res = await _usermanager.CreateAsync(user , registerRequest.Password);
+            var res = await _usermanager.CreateAsync(user, registerRequest.Password);
             if (!res.Succeeded)
             {
-                throw new Exception(string.Join(", ", res.Errors.Select(e=>e.Description)));
+                throw new Exception(string.Join(", ", res.Errors.Select(e => e.Description)));
+            }
+            if (!await _dbContext.Roles.AnyAsync(r => r.Name == "Student"))
+            {
+                await _usermanager.AddToRoleAsync(user, "Student");
+            }
+            else
+            {
+                await _usermanager.AddToRoleAsync(user, "Student");
             }
             var stu = new Student()
             {
-                FullName = registerRequest.UserName,
+                FullName = registerRequest.FullName,
                 PhoneNumber = registerRequest.PhoneNumber,
-                ParentPhoneNumber = registerRequest.PhoneNumber,
+                ParentPhoneNumber = registerRequest.parentPhonenumber,
                 levelFK = registerRequest.LevelNumber,
                 Government = registerRequest.Government,
                 UserId = user.Id,
+                email = registerRequest.Email
             };
 
             await _dbContext.Students.AddAsync(stu);
@@ -69,14 +74,13 @@ namespace BusinessAccessLayes.Services.Classes
 
             return new UserResponce()
             {
-                UserName = stu.FullName,
+                FullName = stu.FullName,
                 phonenumber = stu.PhoneNumber,
-                Token =await generateJwtToken(stu)
+                Token = await generateJwtToken(stu)
             };
         }
-
-
-        private async Task<string> generateJwtToken(Student student) {
+        private async Task<string> generateJwtToken(Student student)
+        {
 
             var user = await _usermanager.FindByIdAsync(student.UserId);
             var roles = await _usermanager.GetRolesAsync(user);
@@ -103,5 +107,41 @@ namespace BusinessAccessLayes.Services.Classes
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        #region Forgot and Reset Password
+        public async Task<bool> ResetPassword(ResetPassword request)
+        {
+            var user = await _usermanager.FindByEmailAsync(request.Email);
+            if (user == null)
+                throw new Exception("User not found.");
+
+            var result = await _usermanager.ResetPasswordAsync(user, request.Token, request.NewPassword);
+            return result.Succeeded;
+        }
+
+        public async Task<string> GeneratePasswordResetToken(string email)
+        {
+            var user = await _usermanager.FindByEmailAsync(email);
+            if (user == null)
+                throw new Exception("User not found.");
+
+            var token = await _usermanager.GeneratePasswordResetTokenAsync(user);
+            return token;
+        }
+
+        public async Task SendPasswordResetEmail(string email)
+        {
+            var user = await _usermanager.FindByEmailAsync(email);
+            if (user == null) throw new Exception("User not found.");
+
+            var token = await _usermanager.GeneratePasswordResetTokenAsync(user);
+            string resetLink = $"https://localhost:7182/api/Authontication/reset-password?email={email}&token={token}";
+
+            string subject = "Password Reset Request";
+            string body = $"Click the link to reset your password: <a href='{resetLink}'>Reset Password</a>";
+
+            await _emailService.SendEmailAsync(email, subject, body);
+        }
+        #endregion
     }
 }

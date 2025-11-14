@@ -1,16 +1,19 @@
 ﻿using BusinessAccessLayes.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessAccessLayes.ServiceManagers
 {
     public interface IServiceManager
     {
-        public ILessonService LessontService { get; }
+        public ILessonService LessonService { get; }
+        public IAnncouncementService AnnouncementService { get; }
+        public ICommentService CommentService { get; }
+        public BusinessAccessLayes.Services.Interfaces.IAuthenticationService AuthenticationService { get; }
+        public IUserService UserService { get; }
+        public IRoleService RoleService { get; }
+        ICourseService CourseService { get; }
 
-        public IAuthenticationService AuthenticationService { get; }
     }
 }
+
+
+

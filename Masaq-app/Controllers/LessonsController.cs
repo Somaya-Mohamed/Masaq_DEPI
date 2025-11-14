@@ -1,4 +1,5 @@
 ﻿using BusinessAccessLayes.ServiceManagers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DataTransferObjects.Announcements;
@@ -8,7 +9,6 @@ using System.Threading.Tasks;
 
 namespace Masaq_APP.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class LessonsController : ControllerBase
@@ -20,12 +20,15 @@ namespace Masaq_APP.Controllers
             _serviceManager = serviceManager;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LessonDTO>>> GetAllLessonsAsync([FromQuery] LessonQueryParams queryParams)
         {
             var lessons = await _serviceManager.LessonService.GetAllLessonsAsync(queryParams);
             return Ok(lessons);
         }
+
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<LessonDetailsDTO>> GetLessonByIdAsync(int id)
         {
@@ -34,6 +37,7 @@ namespace Masaq_APP.Controllers
                 return NotFound();
             return Ok(lesson);
         }
+
         [HttpGet("Comment/{id:int}")]
         public async Task<ActionResult<CommentDTO>> GetCommentByIdAsync(int id)
         {
@@ -43,12 +47,15 @@ namespace Masaq_APP.Controllers
             return Ok(comment);
         }
 
+        [AllowAnonymous]
         [HttpGet("announcements")]
         public async Task<ActionResult<IEnumerable<AnnouncementDTO>>> GetAllAnnouncementsAsync()
         {
             var announcements = await _serviceManager.AnnouncementService.GetAllAnnouncementAsync();
             return Ok(announcements);
         }
+
+        [AllowAnonymous]
         [HttpGet("Comments")]
         public async Task<ActionResult<IEnumerable<CommentDTO>>> GetAllCommentssAsync()
         {
@@ -56,6 +63,7 @@ namespace Masaq_APP.Controllers
             return Ok(comments);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("announcements/{id:int}")]
         public async Task DeleteAnnouncement(int id)
         {
@@ -63,25 +71,31 @@ namespace Masaq_APP.Controllers
           await  _serviceManager.AnnouncementService.DeleteAnnouncement(id);
 
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task DeleteLesson(int id)
         {
            await _serviceManager.LessonService.DeleteLesson(id);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("Comment/{id:int}")]
         public async Task DeleteComment(int id)
         {
            await _serviceManager.CommentService.DeleteComment(id);
 
         }
-            
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("Lesson")]
         public async Task CreateLesson([FromBody] UpdateLessonDTO LessonDTO)
         { 
             await _serviceManager.LessonService.AddLessonAsync(LessonDTO);
         }
-       [HttpPost("announcement")]
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("announcement")]
        public async Task CreateAnnouncement([FromBody] AnnouncementDTO announcementDTO)
         {
             var lesson = await _serviceManager.LessonService.GetLessonByIdAsync(announcementDTO.LessonId);
@@ -93,14 +107,21 @@ namespace Masaq_APP.Controllers
             }
         }
 
-       [HttpPost("Comment")]
+        [AllowAnonymous]
+        [HttpPost("Comment")]
        public async Task CreateComment([FromBody] CreateCommentDTO commentDTO)
         {
            await _serviceManager.CommentService.AddCommentAsync(commentDTO);
         }
 
 
+        [AllowAnonymous]
+        [HttpGet("course/{courseId:int}")]
+        public async Task<IActionResult> GetByCourse(int courseId)
+        {
+            var lessons = await _serviceManager.LessonService.GetLessonsByCourseAsync(courseId);
+            return Ok(lessons);
+        }
 
-        
     }
 }

@@ -1,16 +1,17 @@
 ﻿using Shared.DataTransferObjects.Authentication;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessAccessLayes.Services.Interfaces
 {
     public interface IAuthenticationService
     {
-        Task<UserResponce>  Login(LoginRequest loginRequest);
+        Task<UserResponce> Login(LoginRequest loginRequest);
 
-        Task<UserResponce> Register (RegisterRequest registerRequest);
+        Task<UserResponce> Register(RegisterRequest registerRequest);
+        #region Forgot and Reset Password
+
+        Task<string> GeneratePasswordResetToken(string email);
+        Task<bool> ResetPassword(ResetPassword request);
+        public Task SendPasswordResetEmail(string email);
+        #endregion
     }
 }
