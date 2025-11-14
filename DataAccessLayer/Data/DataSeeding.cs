@@ -79,6 +79,7 @@ namespace DataAccessLayer.Data
                            LevelFK = level1.Id,
                            Level=level1,
                            CreatedBy = 1,
+                           ImageName = "صورة1.jpg",
                            CreatedOn = DateTime.Now,
                            LastModifiedBy = 1,
                            LastModifiedOn = DateTime.Now,

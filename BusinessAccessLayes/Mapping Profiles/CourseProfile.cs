@@ -20,21 +20,27 @@ namespace BusinessAccessLayes.Mapping_Profiles
                 .ForMember(dest => dest.LevelName,
                            opt => opt.MapFrom(src => src.Level.AcademicYear))
                 .ForMember(dest => dest.LessonsCount,
-                           opt => opt.MapFrom(src => src.lessons.Count));
+                           opt => opt.MapFrom(src => src.lessons.Count))
+            .ForMember(dest => dest.ImageUrl,
+                           opt => opt.MapFrom<CoursePictureResolver<CourseDto>>()); 
 
-            // Course → CourseDetailsDto (مع الدروس)
+            // Course → CourseDetailsDto 
             CreateMap<Course, CourseDetailsDto>()
                 .ForMember(dest => dest.LevelName,
                            opt => opt.MapFrom(src => src.Level.AcademicYear))
                 .ForMember(dest => dest.LessonsCount,
                            opt => opt.MapFrom(src => src.lessons.Count))
                 .ForMember(dest => dest.Lessons,
-                           opt => opt.MapFrom(src => src.lessons));
+                           opt => opt.MapFrom(src => src.lessons))
+               .ForMember(dest => dest.ImageUrl,
+                           opt => opt.MapFrom<CoursePictureResolver<CourseDetailsDto>>());
 
             // DTOs → Entity
-            CreateMap<CreatAndUpdateCourseDto, Course>();
+            CreateMap<CreatAndUpdateCourseDto, Course>()
+            .ForMember(dest => dest.ImageName,
+                           opt => opt.Ignore()); 
 
-            // Lesson → LessonDto (للـ CourseDetailsDto)
+            // Lesson → LessonDto 
             CreateMap<Lesson, LessonDTO>()
                 .ForMember(dest => dest.CourseName,
                            opt => opt.MapFrom(src => src.course.Title))

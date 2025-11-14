@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,7 @@ namespace Shared.DataTransferObjects.Courses
     {
         public string Title { get; set; } = null!;
         public int LevelFK { get; set; }
+
+        public IFormFile? Image { get; set; }
     }
 }

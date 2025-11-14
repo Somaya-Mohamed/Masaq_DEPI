@@ -8,7 +8,7 @@ namespace DataAccessLayer.Models.Contents.Courses
     {
         public int Id { get; set; }
         public string Title { get; set; }
-
+        public string? ImageName { get; set; }
 
 
         #region  one to many relationship between course(one) and lesson(many)
