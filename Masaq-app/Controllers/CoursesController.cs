@@ -18,6 +18,7 @@ namespace Masaq_app.Controllers
             _serviceManager = serviceManager;
         }
 
+
         // GET: api/courses
         [HttpGet]
         [AllowAnonymous]
@@ -49,8 +50,8 @@ namespace Masaq_app.Controllers
 
         // POST: api/courses
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<CourseDto>> CreateAsync([FromBody] CreatAndUpdateCourseDto dto)
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<CourseDto>> CreateAsync([FromForm] CreatAndUpdateCourseDto dto)
         {
             var created = await _serviceManager.CourseService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetByIdAsync), new { id = created.Id }, created);
@@ -58,8 +59,8 @@ namespace Masaq_app.Controllers
 
         // PUT: api/courses/5
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateAsync(int id, [FromBody] CreatAndUpdateCourseDto dto)
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateAsync(int id, [FromForm] CreatAndUpdateCourseDto dto)
         {
             var updated = await _serviceManager.CourseService.UpdateAsync(id, dto);
             return updated ? NoContent() : NotFound();
@@ -82,3 +83,5 @@ namespace Masaq_app.Controllers
         }
     }
 }
+
+
