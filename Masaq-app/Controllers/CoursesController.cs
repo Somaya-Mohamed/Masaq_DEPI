@@ -49,17 +49,17 @@ namespace Masaq_app.Controllers
 
         // POST: api/courses
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<CourseDto>> CreateAsync([FromBody] CreatAndUpdateCourseDto dto)
+        //[Authorize(Roles = "Admin")]
+        public async Task<ActionResult<CourseDto>> CreateAsync([FromForm] CreatAndUpdateCourseDto dto)
         {
             var created = await _serviceManager.CourseService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = created.Id }, created);
+            return  Ok(created);
         }
 
         // PUT: api/courses/5
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateAsync(int id, [FromBody] CreatAndUpdateCourseDto dto)
+        //[Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateAsync(int id, [FromForm] CreatAndUpdateCourseDto dto)
         {
             var updated = await _serviceManager.CourseService.UpdateAsync(id, dto);
             return updated ? NoContent() : NotFound();
@@ -67,7 +67,7 @@ namespace Masaq_app.Controllers
 
         // DELETE: api/courses/5
         [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
             try

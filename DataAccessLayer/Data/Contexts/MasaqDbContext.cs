@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.Models;
 using DataAccessLayer.Models.Admin;
 using DataAccessLayer.Models.Announcements;
+using DataAccessLayer.Models.code;
 using DataAccessLayer.Models.Contents.Answers;
 using DataAccessLayer.Models.Contents.Comments;
 using DataAccessLayer.Models.Contents.Courses;
@@ -94,6 +95,10 @@ namespace DataAccessLayer.Data.Contexts
         public DbSet<Level> Levels { get; set; }
         public DbSet<LessonVideo> LessonVideos { get; set; }
 
-       
-    }
+        public DbSet<Code> Codes { get; set; }
+
+        public DbSet<Enrollment> Enrollments { get; set; }
+
+
+        }
 }

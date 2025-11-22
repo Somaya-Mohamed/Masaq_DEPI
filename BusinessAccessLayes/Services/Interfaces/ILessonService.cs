@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccessLayer.Models.Contents.Lessons;
+using Microsoft.AspNetCore.Mvc;
 using Shared.DataTransferObjects.Announcements;
 using Shared.DataTransferObjects.Comments;
 using Shared.DataTransferObjects.Lessons;
@@ -13,7 +14,7 @@ namespace BusinessAccessLayes.Services.Interfaces
     public interface ILessonService
     {
 
-        Task AddLessonAsync(UpdateLessonDTO updateLessonDTO);
+        Task<Lesson> AddLessonAsync(UpdateLessonDTO updateLessonDTO);
        
         //////////
         

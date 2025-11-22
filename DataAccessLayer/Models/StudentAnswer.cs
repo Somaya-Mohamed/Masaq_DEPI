@@ -12,11 +12,13 @@ using System.Threading.Tasks;
 namespace DataAccessLayer.Models
 {
 
-    [PrimaryKey(nameof(StudentExamId), nameof(QuestionId))]
     public class StudentAnswer  
     {
-        public string? AnswerText { get; set; } // for Essay
-        public string? FilePath { get; set; }  // optional for Essay (صورة/ملف)
+        //public string? AnswerText { get; set; } // for Essay
+        //public string? FilePath { get; set; }  // optional for Essay (صورة/ملف)
+
+        [Key]
+        public int Id { get; set; }
     
         [Required]
 
@@ -31,13 +33,14 @@ namespace DataAccessLayer.Models
 
         public int QuestionId { get; set; }
         [ForeignKey(nameof(QuestionId))]
+        [InverseProperty(nameof(Question.studentAnswers))]
         public Question Question { get; set; }=null!;
 
 
-        public int? AnswerId { get; set; }   // بدل OptionId
 
+        public int? AnswerId { get; set; }   // بدل OptionId
         [ForeignKey(nameof(AnswerId))]
-        [InverseProperty(nameof(QuestionOptions.StudentAnswers))]
-        public QuestionOptions answer { get; set; }
+        [InverseProperty(nameof(Answer.Answers))]
+        public Answer? Answer { get; set; } = null!;
     }
 }

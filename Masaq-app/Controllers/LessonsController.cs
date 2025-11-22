@@ -1,4 +1,5 @@
 ﻿using BusinessAccessLayes.ServiceManagers;
+using DataAccessLayer.Models.Contents.Lessons;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -87,11 +88,12 @@ namespace Masaq_APP.Controllers
 
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("Lesson")]
-        public async Task CreateLesson([FromBody] UpdateLessonDTO LessonDTO)
+        public async Task<Lesson> CreateLesson([FromForm] UpdateLessonDTO LessonDTO)
         { 
-            await _serviceManager.LessonService.AddLessonAsync(LessonDTO);
+             var x = await _serviceManager.LessonService.AddLessonAsync(LessonDTO);
+            return x;
         }
 
         [Authorize(Roles = "Admin")]

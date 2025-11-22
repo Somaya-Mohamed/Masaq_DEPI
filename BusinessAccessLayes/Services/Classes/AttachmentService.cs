@@ -5,7 +5,7 @@ namespace BusinessLogic.Services.Classes
 {
     public class AttachmentService : IAttachmentService
     {
-        List<string> allowedExtentions = new List<string>() { ".png", ".Jpg", ".Jpeg" };
+        List<string> allowedExtentions = new List<string>() { ".png", ".Jpg", ".Jpeg" , ".jpeg" , ".jpg" , ".PNG" };
         const int maxSize = 2 * 1024 * 1024;
         public string? Upload(IFormFile file, string folderName)
         {
@@ -18,12 +18,12 @@ namespace BusinessLogic.Services.Classes
             {
                 return null;
             }
-            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "lessons", "Images");
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload",folderName, "images");
             var fileName = $"{Guid.NewGuid()}_{file.FileName}";
             var filePath = Path.Combine(folderPath, fileName);
             using FileStream fs = new FileStream(filePath, FileMode.Create);
             file.CopyTo(fs);
-            return fileName;
+            return $"upload/{folderName}/images/{fileName}";
         }
         public bool Delete(string filePath)
         {

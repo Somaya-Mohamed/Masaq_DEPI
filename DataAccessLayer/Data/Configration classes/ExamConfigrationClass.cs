@@ -20,7 +20,6 @@ namespace DataAccessLayer.Data.Configration_classes
             #endregion
 
 
-            builder.Property(e=>e.Description).HasColumnType("nvarchar(200)").IsRequired(false);
             base.Configure(builder);
 
         }    }

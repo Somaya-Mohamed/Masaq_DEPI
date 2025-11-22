@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessAccessLayes.Services.Interfaces;
 using BusinessAccessLayes.Specification.Lessons;
+using BusinessLogic.Services.Interfaces;
 using DataAccessLayer.Models.Contents.Lessons;
 using DataAccessLayer.Repositories.UnitOfWork;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +9,8 @@ using Shared.DataTransferObjects.Lessons;
 
 namespace BusinessAccessLayes.Services.Classes
 {
-    public class LessonService(IUnitOfWork unitOfWork, IMapper mapper) : ILessonService
+    public class LessonService(IUnitOfWork unitOfWork, IMapper mapper , 
+        IAttachmentService _attach) : ILessonService
     {
 
 
@@ -33,13 +35,14 @@ namespace BusinessAccessLayes.Services.Classes
             var lessonDTO = mapper.Map<IEnumerable<Lesson>, IEnumerable<LessonDTO>>(lessons);
             return lessonDTO;
         }
-        public async Task AddLessonAsync(UpdateLessonDTO updateLessonDTO)
+        public async Task<Lesson> AddLessonAsync(UpdateLessonDTO updateLessonDTO)
         {
             var repo = unitOfWork.GetRepository<Lesson, int>();
             var lesson = mapper.Map<UpdateLessonDTO, Lesson>(updateLessonDTO);
+            lesson.ImageName = _attach.Upload(updateLessonDTO.ImageName, "lects");
             await repo.AddAsync(lesson);
             await unitOfWork.SaveChangesAsync();
-
+            return lesson;
         }
 
 
@@ -48,6 +51,7 @@ namespace BusinessAccessLayes.Services.Classes
         {
             var repo = unitOfWork.GetRepository<Lesson, int>();
             var lesson = mapper.Map<UpdateLessonDTO, Lesson>(updateLessonDTO);
+            lesson.ImageName = _attach.Upload(updateLessonDTO.ImageName, "lects");
             repo.Update(lesson);
             await unitOfWork.SaveChangesAsync();
         }

@@ -86,8 +86,9 @@ namespace BusinessAccessLayes.Services.Classes
             var roles = await _usermanager.GetRolesAsync(user);
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier , student.UserId),
+                new Claim(ClaimTypes.NameIdentifier , student.Id.ToString()),
                 new Claim(ClaimTypes.Name , student.FullName),
+                new Claim("StudentId", student.Id.ToString())
 
             };
             foreach (var role in roles) claims.Add(new Claim(ClaimTypes.Role, role));

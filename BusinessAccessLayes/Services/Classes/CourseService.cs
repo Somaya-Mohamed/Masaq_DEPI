@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessAccessLayes.Services.Interfaces;
 using BusinessAccessLayes.Specification.Courses;
+using BusinessLogic.Services.Interfaces;
 using DataAccessLayer.Models.Contents.Courses;
 using DataAccessLayer.Repositories.UnitOfWork;
 using Shared.DataTransferObjects.Courses;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace BusinessAccessLayes.Services.Classes
 {
-    public class CourseService(IUnitOfWork unitOfWork, IMapper mapper) : ICourseService
+    public class CourseService(IUnitOfWork unitOfWork, IMapper mapper , IAttachmentService _attach) : ICourseService
     {
         public async Task<IEnumerable<CourseDto>> GetAllAsync()
         {
@@ -44,6 +45,7 @@ namespace BusinessAccessLayes.Services.Classes
         {
             var repo = unitOfWork.GetRepository<Course, int>();
             var entity = mapper.Map<Course>(dto);
+            entity.ImageUrl = _attach.Upload(dto.ImageUrl, "courses");
             await repo.AddAsync(entity);
             await unitOfWork.SaveChangesAsync();
             return mapper.Map<CourseDto>(entity);
@@ -56,6 +58,7 @@ namespace BusinessAccessLayes.Services.Classes
             if (course == null) return false;
 
             mapper.Map(dto, course);
+            course.ImageUrl = _attach.Upload(dto.ImageUrl, "courses");
             repo.Update(course);
             await unitOfWork.SaveChangesAsync();
             return true;

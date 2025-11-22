@@ -108,13 +108,18 @@ namespace DataAccessLayer.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ImageName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Text")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
 
                     b.ToTable("Answer");
                 });
@@ -184,6 +189,13 @@ namespace DataAccessLayer.Data.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
@@ -217,6 +229,9 @@ namespace DataAccessLayer.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CourseId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
@@ -225,19 +240,10 @@ namespace DataAccessLayer.Data.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(200)");
-
                     b.Property<int>("Duration")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("IsAvaliable")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDeleted")
@@ -257,13 +263,12 @@ namespace DataAccessLayer.Data.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool?>("Status")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
 
                     b.HasIndex("LessonId");
 
@@ -341,24 +346,14 @@ namespace DataAccessLayer.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Body")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(600)");
-
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("ExamId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Header")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(200)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -367,48 +362,20 @@ namespace DataAccessLayer.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("LastModifiedOn")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasComputedColumnSql("GETDATE()");
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("Mark")
-                        .HasColumnType("int");
+                    b.Property<string>("PicUrl")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ExamId");
 
                     b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.Contents.Questions.QuestionOptions", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("OptionText")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("QuestionOptions");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.HumanBaseEntity", b =>
@@ -569,26 +536,28 @@ namespace DataAccessLayer.Data.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Models.StudentAnswer", b =>
                 {
-                    b.Property<int>("StudentExamId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AnswerId")
                         .HasColumnType("int");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("AnswerId")
+                    b.Property<int>("StudentExamId")
                         .HasColumnType("int");
 
-                    b.Property<string>("AnswerText")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("StudentExamId", "QuestionId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AnswerId");
 
                     b.HasIndex("QuestionId");
+
+                    b.HasIndex("StudentExamId");
 
                     b.ToTable("StudentAnswer");
                 });
@@ -601,17 +570,35 @@ namespace DataAccessLayer.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedOn")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("ExamId")
                         .HasColumnType("int");
 
                     b.Property<double?>("Grade")
                         .HasColumnType("float");
 
-                    b.Property<bool>("IsPassed")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsSubmitted")
+                    b.Property<bool?>("IsPassed")
                         .HasColumnType("bit");
+
+                    b.Property<bool?>("IsSubmitted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LastModifiedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LastModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("SendDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
@@ -641,6 +628,57 @@ namespace DataAccessLayer.Data.Migrations
                     b.HasIndex("LessonId");
 
                     b.ToTable("StudentLesson");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.code.Code", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DurationInDays")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("LessonId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Codes");
+                });
+
+            modelBuilder.Entity("DataAccessLayer.Models.code.Enrollment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("CodeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("LessonId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -841,6 +879,17 @@ namespace DataAccessLayer.Data.Migrations
                     b.Navigation("lesson");
                 });
 
+            modelBuilder.Entity("DataAccessLayer.Models.Contents.Answers.Answer", b =>
+                {
+                    b.HasOne("DataAccessLayer.Models.Contents.Questions.Question", "Question")
+                        .WithMany("Options")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+                });
+
             modelBuilder.Entity("DataAccessLayer.Models.Contents.Comments.Comment", b =>
                 {
                     b.HasOne("DataAccessLayer.Models.Contents.Lessons.Lesson", "lesson")
@@ -873,10 +922,17 @@ namespace DataAccessLayer.Data.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Models.Contents.Exams.Exam", b =>
                 {
+                    b.HasOne("DataAccessLayer.Models.Contents.Courses.Course", "Course")
+                        .WithMany("exams")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("DataAccessLayer.Models.Contents.Lessons.Lesson", "Lesson")
                         .WithMany("exams")
                         .HasForeignKey("LessonId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Course");
 
                     b.Navigation("Lesson");
                 });
@@ -905,30 +961,19 @@ namespace DataAccessLayer.Data.Migrations
 
             modelBuilder.Entity("DataAccessLayer.Models.Contents.Questions.Question", b =>
                 {
-                    b.HasOne("DataAccessLayer.Models.Contents.Exams.Exam", "exam")
+                    b.HasOne("DataAccessLayer.Models.Contents.Exams.Exam", "Exam")
                         .WithMany("questions")
                         .HasForeignKey("ExamId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("exam");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.Contents.Questions.QuestionOptions", b =>
-                {
-                    b.HasOne("DataAccessLayer.Models.Contents.Questions.Question", "Question")
-                        .WithMany("Options")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Question");
+                    b.Navigation("Exam");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.StudentAnswer", b =>
                 {
-                    b.HasOne("DataAccessLayer.Models.Contents.Questions.QuestionOptions", "answer")
-                        .WithMany("StudentAnswers")
+                    b.HasOne("DataAccessLayer.Models.Contents.Answers.Answer", "Answer")
+                        .WithMany("Answers")
                         .HasForeignKey("AnswerId")
                         .OnDelete(DeleteBehavior.Restrict);
 
@@ -944,11 +989,11 @@ namespace DataAccessLayer.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("Answer");
+
                     b.Navigation("Question");
 
                     b.Navigation("StudentExam");
-
-                    b.Navigation("answer");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.StudentExam", b =>
@@ -1070,8 +1115,15 @@ namespace DataAccessLayer.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("DataAccessLayer.Models.Contents.Answers.Answer", b =>
+                {
+                    b.Navigation("Answers");
+                });
+
             modelBuilder.Entity("DataAccessLayer.Models.Contents.Courses.Course", b =>
                 {
+                    b.Navigation("exams");
+
                     b.Navigation("lessons");
                 });
 
@@ -1100,11 +1152,6 @@ namespace DataAccessLayer.Data.Migrations
                     b.Navigation("Options");
 
                     b.Navigation("studentAnswers");
-                });
-
-            modelBuilder.Entity("DataAccessLayer.Models.Contents.Questions.QuestionOptions", b =>
-                {
-                    b.Navigation("StudentAnswers");
                 });
 
             modelBuilder.Entity("DataAccessLayer.Models.IdentityModels.ApplicationUser", b =>

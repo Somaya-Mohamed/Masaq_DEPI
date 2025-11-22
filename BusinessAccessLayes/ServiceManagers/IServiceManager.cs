@@ -11,6 +11,9 @@ namespace BusinessAccessLayes.ServiceManagers
         public IUserService UserService { get; }
         public IRoleService RoleService { get; }
         ICourseService CourseService { get; }
+        public IExamService ExamService { get; }
+
+        public IEnrollmentService EnrollmentService { get; }
 
     }
 }
