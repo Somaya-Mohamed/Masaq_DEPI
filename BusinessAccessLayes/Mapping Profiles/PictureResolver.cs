@@ -30,17 +30,4 @@ namespace BusinessAccessLayes.Mapping_Profiles
     }
 
 
-    public class CoursePictureResolver<TDestination> : IValueResolver<Course, TDestination, string>
-    {
-        private readonly IConfiguration _configuration;
-        public CoursePictureResolver(IConfiguration configuration) => _configuration = configuration;
-
-        public string Resolve(Course source, TDestination destination, string destMember, ResolutionContext context)
-        {
-            if (string.IsNullOrEmpty(source.ImageName)) return string.Empty;
-            return $"{_configuration.GetSection("Urls")["BaseUrl"]}{source.ImageName}";
-        }
-    }
-
-
 }
