@@ -17,15 +17,15 @@ namespace DataAccessLayer.Models.Contents.Lessons
         
 
         [InverseProperty(nameof(Announcement.lesson))]
-        public ICollection<Announcement> announcements { get; set; } = new HashSet<Announcement>();
+        public ICollection<Announcement>? announcements { get; set; } = new HashSet<Announcement>();
 
 
         #region one to many relationship between course(one) and lesson(many)
 
-        public int CourseIdFK { get; set; }
         [ForeignKey(nameof(CourseIdFK))]
+        public int CourseIdFK { get; set; }
         [InverseProperty(nameof(Course.lessons))]
-        public Course course { get; set; }
+        public Course? course { get; set; }
 
         #endregion
 
@@ -33,9 +33,9 @@ namespace DataAccessLayer.Models.Contents.Lessons
         public ICollection<Exam> exams { get; set; } = new HashSet<Exam>();
         #endregion
         [InverseProperty(nameof(Comment.lesson))]
-        public ICollection<Comment> comments { get; set; } = new HashSet<Comment>();
+        public ICollection<Comment>? comments { get; set; } = new HashSet<Comment>();
 
-        public ICollection<StudentLesson> studentLessons { get; set; } = new HashSet<StudentLesson>();
+        public ICollection<StudentLesson>? studentLessons { get; set; } = new HashSet<StudentLesson>();
 
         [InverseProperty(nameof(LessonVideo.Lesson))]
         public ICollection<LessonVideo>? LessonVideos { get; set; } = new HashSet<LessonVideo>();

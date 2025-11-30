@@ -5,6 +5,8 @@ using BusinessAccessLayes.ServiceManagers;
 using BusinessAccessLayes.Services.Classes;
 using BusinessAccessLayes.Services.Interfaces;
 using BusinessAccessLayes.Settings;
+using BusinessLogic.Services.Classes;
+using BusinessLogic.Services.Interfaces;
 using DataAccessLayer.Contracts;
 using DataAccessLayer.Data;
 using DataAccessLayer.Data.Contexts;
@@ -14,6 +16,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -26,7 +29,17 @@ namespace Masaq_app
             var builder = WebApplication.CreateBuilder(args);
 
 
-
+            //add corse origin 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200") // <-- your Angular app origin
+                          .AllowAnyHeader()                     // allow any header
+                          .AllowAnyMethod()                     // allow GET, POST, PUT, DELETE, etc.
+                          .AllowCredentials();                  // allow cookies if needed
+                });
+            });
             // Add services to the container.
 
             builder.Services.AddControllers();
@@ -119,6 +132,7 @@ namespace Masaq_app
 
 
             builder.Services.AddScoped<IDataSeeding, DataSeeding>();
+            builder.Services.AddScoped<IAttachmentService, AttachmentService>();
             builder.Services.AddScoped<ILessonService, LessonService>();
             builder.Services.AddAutoMapper(cong => cong.AddProfile(new LessonProfile()), typeof(AssembblyReference).Assembly);
             builder.Services.AddScoped<IServiceManager, ServiceManager>();
@@ -144,11 +158,17 @@ namespace Masaq_app
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseCors("AllowAngularApp");
+            app.UseStaticFiles(); // 1) serve wwwroot normally
+
+            app.UseStaticFiles(new StaticFileOptions // 2) serve upload folder
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "upload")),
+                RequestPath = "/upload"
+            });
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
-
-
             app.UseAuthentication();
             app.UseAuthorization();
 

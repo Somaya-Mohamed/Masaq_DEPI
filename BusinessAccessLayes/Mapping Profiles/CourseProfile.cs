@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DataAccessLayer.Models.Contents.Courses;
 using DataAccessLayer.Models.Contents.Lessons;
+using Microsoft.Extensions.Configuration;
 using Shared.DataTransferObjects.Courses;
 using Shared.DataTransferObjects.Lessons;
 using System;
@@ -21,8 +22,7 @@ namespace BusinessAccessLayes.Mapping_Profiles
                            opt => opt.MapFrom(src => src.Level.AcademicYear))
                 .ForMember(dest => dest.LessonsCount,
                            opt => opt.MapFrom(src => src.lessons.Count))
-            .ForMember(dest => dest.ImageUrl,
-                           opt => opt.MapFrom<CoursePictureResolver<CourseDto>>()); 
+                .ForMember(dest => dest.ImageUrl, src => src.MapFrom<PictureCourceResolver<CourseDto>>());
 
             // Course → CourseDetailsDto 
             CreateMap<Course, CourseDetailsDto>()
@@ -32,13 +32,11 @@ namespace BusinessAccessLayes.Mapping_Profiles
                            opt => opt.MapFrom(src => src.lessons.Count))
                 .ForMember(dest => dest.Lessons,
                            opt => opt.MapFrom(src => src.lessons))
-               .ForMember(dest => dest.ImageUrl,
-                           opt => opt.MapFrom<CoursePictureResolver<CourseDetailsDto>>());
+                 .ForMember(dest => dest.ImageUrl, src => src.MapFrom<PictureCourceResolver<CourseDetailsDto>>()); 
 
             // DTOs → Entity
             CreateMap<CreatAndUpdateCourseDto, Course>()
-            .ForMember(dest => dest.ImageName,
-                           opt => opt.Ignore()); 
+                  .ForMember(dest => dest.ImageUrl, opt => opt.Ignore());
 
             // Lesson → LessonDto 
             CreateMap<Lesson, LessonDTO>()
@@ -46,6 +44,24 @@ namespace BusinessAccessLayes.Mapping_Profiles
                            opt => opt.MapFrom(src => src.course.Title))
                 .ForMember(dest => dest.LevelName,
                            opt => opt.MapFrom(src => src.course.Level.AcademicYear));
+        }
+    }
+
+    public class PictureCourceResolver<TDestination> : IValueResolver<Course, TDestination, string>
+    {
+        private readonly IConfiguration _configuration;
+
+        public PictureCourceResolver(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public string Resolve(Course source, TDestination destination, string destMember, ResolutionContext context)
+        {
+            if (string.IsNullOrEmpty(source.ImageUrl))
+                return string.Empty;
+
+            return $"{_configuration.GetSection("Urls")["BaseUrl"]}{source.ImageUrl}";
         }
     }
 }

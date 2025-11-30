@@ -12,15 +12,17 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Models
 {
-    public class StudentExam
+    public class StudentExam : BaseOfAllContentEntities<int>
     {
         [Key]
         public int Id { get; set; } // surrogate PK
-        public int StudentId { get; set; }
+        public int? StudentId { get; set; }
 
         [ForeignKey(nameof(StudentId))]
         public Student Student { get; set; }
-       
+
+        public DateTime SendDate { get; set; }
+
 
         public int ExamId { get; set; }
 
@@ -29,8 +31,8 @@ namespace DataAccessLayer.Models
 
         public double? Grade { get; set; }
         public DateTime? SubmittedAt { get; set; }
-        public bool IsSubmitted { get; set; }
-        public bool IsPassed { get; set; }
+        public bool? IsSubmitted { get; set; }
+        public bool? IsPassed { get; set; }
         public ICollection<StudentAnswer> Answers { get; set; } = new HashSet<StudentAnswer>();
 
     }

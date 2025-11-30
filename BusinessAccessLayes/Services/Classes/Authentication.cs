@@ -19,7 +19,22 @@ namespace BusinessAccessLayes.Services.Classes
         {
             //after this tow lines of code we should through exception that user with this id is not found 
             var user = await _dbContext.Students.FirstOrDefaultAsync(s => s.PhoneNumber == loginRequest.phoneNumber);
-            var appuser = await _usermanager.FindByIdAsync(user.UserId);
+
+          if(user == null)
+            {
+                throw new Exception("User not found.");
+            }
+            ApplicationUser appuser;
+            if (await _usermanager.FindByIdAsync(user.UserId) is not null)
+            {
+                appuser = await _usermanager.FindByIdAsync(user.UserId);
+
+            }
+            else
+            {
+                throw new Exception("user not found");
+            }
+
 
             var res = await _usermanager.CheckPasswordAsync(appuser, loginRequest.password);
             if (!res)
@@ -86,8 +101,9 @@ namespace BusinessAccessLayes.Services.Classes
             var roles = await _usermanager.GetRolesAsync(user);
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier , student.UserId),
+                new Claim(ClaimTypes.NameIdentifier , student.Id.ToString()),
                 new Claim(ClaimTypes.Name , student.FullName),
+                new Claim("StudentId", student.Id.ToString())
 
             };
             foreach (var role in roles) claims.Add(new Claim(ClaimTypes.Role, role));

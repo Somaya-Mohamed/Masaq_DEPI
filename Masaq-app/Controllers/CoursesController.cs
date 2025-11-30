@@ -1,4 +1,5 @@
 ﻿using BusinessAccessLayes.ServiceManagers;
+using DataAccessLayer.Models.Levels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -54,7 +55,7 @@ namespace Masaq_app.Controllers
         public async Task<ActionResult<CourseDto>> CreateAsync([FromForm] CreatAndUpdateCourseDto dto)
         {
             var created = await _serviceManager.CourseService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = created.Id }, created);
+            return  Ok(created);
         }
 
         // PUT: api/courses/5
@@ -68,7 +69,7 @@ namespace Masaq_app.Controllers
 
         // DELETE: api/courses/5
         [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
             try
@@ -80,6 +81,21 @@ namespace Masaq_app.Controllers
             {
                 return BadRequest($"Cannot delete course: {ex.Message}");
             }
+        }
+
+        [HttpGet("GetAllLevels")]
+        public async Task<ActionResult<IEnumerable<Level>>> GetAllLevels()
+        {
+            var levels = await _serviceManager.CourseService.getLevels();
+            return Ok(levels);
+        }
+
+
+        [HttpPost("AddLevel")]
+        public async Task<ActionResult<Level>> AddLevel(Level level)
+        {
+            var lev = await _serviceManager.CourseService.addLevel(level);
+            return Ok(lev);
         }
     }
 }

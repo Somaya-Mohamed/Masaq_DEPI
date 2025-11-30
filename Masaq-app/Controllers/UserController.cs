@@ -41,7 +41,9 @@ namespace Masaq_app.Controllers
             var deleted = await _serviceManager.UserService.DeleteAsync(id);
             if (!deleted)
                 return NotFound($"No user found with ID = {id}");
-            return Ok("User deleted successfully");
+
+
+            return Ok(new { message = "User deleted successfully" });
         }
     }
 }

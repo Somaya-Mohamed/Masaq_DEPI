@@ -11,17 +11,17 @@ namespace DataAccessLayer.Models.Contents.Questions
     
     public class QuestionOptions
     {
-        public int Id { get; set; }
-        public string OptionText { get; set; } = null!;
-        public bool IsCorrect { get; set; }
+        //public int Id { get; set; }
+        //public string OptionText { get; set; } = null!;
+        //public bool IsCorrect { get; set; }
 
-        public int QuestionId { get; set; }
+        //public int QuestionId { get; set; }
 
-        [ForeignKey(nameof(QuestionId))]
-        [InverseProperty(nameof(Question.Options))]
-        public Question Question { get; set; }
+        //[ForeignKey(nameof(QuestionId))]
+        //[InverseProperty(nameof(Question.Options))]
+        //public Question Question { get; set; }
 
-        [InverseProperty(nameof(StudentAnswer.answer))]
-        public ICollection<StudentAnswer> StudentAnswers { get; set; } = new HashSet<StudentAnswer>();
+        //[InverseProperty(nameof(StudentAnswer.answer))]
+        //public ICollection<StudentAnswer> StudentAnswers { get; set; } = new HashSet<StudentAnswer>();
     }
 }

@@ -27,11 +27,19 @@ namespace BusinessAccessLayes.Mapping_Profiles
             CreateMap<Lesson, LessonDetailsDTO>()
                 .ForMember(dest => dest.ImageName, opt => opt.MapFrom<PictureResolver<LessonDetailsDTO>>());
 
+
+
             CreateMap<Lesson, UpdateLessonDTO>()
-              .ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.course.Title))
-              .ForMember(dest => dest.LevelName, opt => opt.MapFrom(src => src.course.Level.AcademicYear))
-              .ForMember(dest => dest.Videos, opt => opt.MapFrom(src => src.LessonVideos.Select(v => v.VideoURL)))
-              .ReverseMap();
+              .ReverseMap()
+              .ForMember(d => d.announcements, opt => opt.Ignore())
+.ForMember(d => d.exams, opt => opt.Ignore())
+.ForMember(d => d.comments, opt => opt.Ignore())
+.ForMember(d => d.studentLessons, opt => opt.Ignore())
+.ForMember(d => d.LessonVideos, opt => opt.Ignore())
+.ForMember(dest => dest.course, opt => opt.Ignore());
+            //.ForMember(dest => dest.CourseName, opt => opt.MapFrom(src => src.course.Title))
+            //.ForMember(dest => dest.LevelName, opt => opt.MapFrom(src => src.course.Level.AcademicYear))
+            //.ForMember(dest => dest.Videos, opt => opt.MapFrom(src => src.LessonVideos.Select(v => v.VideoURL)))
 
             // **Important:** Map Announcement -> AnnouncementDTO
             CreateMap<Announcement, AnnouncementDTO>()

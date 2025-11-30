@@ -63,406 +63,405 @@ namespace DataAccessLayer.Data
             }
 
             // --------------------- Seeding Courses ---------------------
-            if (!_context.Courses.Any())
-            {
-                // --------------------- Seeding Courses ---------------------
+            //if (!_context.Courses.Any())
+            //{
+            //    // --------------------- Seeding Courses ---------------------
 
-                // --------------------- Add Courses to level 1 ---------------------
-                var level1 = await _context.Levels.FirstOrDefaultAsync(l => l.LevelNumber == 1);
-                if (level1 is not null)
-                {
-                    List<Course> courses = new List<Course>()
-                    {
-                       new Course
-                       {
-                           Title = "الترم الأول - أولى ثانوي - الشهر الأول",
-                           LevelFK = level1.Id,
-                           Level=level1,
-                           CreatedBy = 1,
-                           ImageName = "صورة1.jpg",
-                           CreatedOn = DateTime.Now,
-                           LastModifiedBy = 1,
-                           LastModifiedOn = DateTime.Now,
-                           IsDeleted = false
-                       },
-                       new Course
-                      {
-                          Title = "الترم الأول - أولى ثانوي - الشهر الثاني",
-                          LevelFK = level1.Id,
-                          Level=level1,
-                          CreatedBy = 1,
-                          CreatedOn = DateTime.Now,
-                          LastModifiedBy = 1,
-                          LastModifiedOn = DateTime.Now,
-                          IsDeleted = false
-                      }
-                    };
-                    await _context.Courses.AddRangeAsync(courses);
-                    // إضافة الـ Courses إلى الـ Level (للعلاقة)
-                    level1.Courses.Add(courses[0]);
-                    level1.Courses.Add(courses[1]);
+            //    // --------------------- Add Courses to level 1 ---------------------
+            //    var level1 = await _context.Levels.FirstOrDefaultAsync(l => l.LevelNumber == 1);
+            //    if (level1 is not null)
+            //    {
+            //        List<Course> courses = new List<Course>()
+            //        {
+            //           new Course
+            //           {
+            //               Title = "الترم الأول - أولى ثانوي - الشهر الأول",
+            //               LevelFK = level1.Id,
+            //               Level=level1,
+            //               CreatedBy = 1,
+            //               CreatedOn = DateTime.Now,
+            //               LastModifiedBy = 1,
+            //               LastModifiedOn = DateTime.Now,
+            //               IsDeleted = false
+            //           },
+            //           new Course
+            //          {
+            //              Title = "الترم الأول - أولى ثانوي - الشهر الثاني",
+            //              LevelFK = level1.Id,
+            //              Level=level1,
+            //              CreatedBy = 1,
+            //              CreatedOn = DateTime.Now,
+            //              LastModifiedBy = 1,
+            //              LastModifiedOn = DateTime.Now,
+            //              IsDeleted = false
+            //          }
+            //        };
+            //        await _context.Courses.AddRangeAsync(courses);
+            //        // إضافة الـ Courses إلى الـ Level (للعلاقة)
+            //        level1.Courses.Add(courses[0]);
+            //        level1.Courses.Add(courses[1]);
 
-                }
-                // --------------------- Add Courses to level 2 ---------------------
-                var level2 = await _context.Levels.FirstOrDefaultAsync(l => l.LevelNumber == 2);
-                if (level2 is not null)
-                {
-                    var courseTerm1 = new Course
-                    {
-                        Title = "الترم الأول - تانية ثانوي",
-                        LevelFK = level2?.Id ?? 0, // ربط بالمستوى المضاف
-                        Level = level2,
-                        CreatedBy = 1,
-                        CreatedOn = DateTime.Now,
-                        LastModifiedBy = 1,
-                        LastModifiedOn = DateTime.Now,
-                        IsDeleted = false
-                    };
-                    await _context.Courses.AddAsync(courseTerm1);
-                    // إضافة الـ Courses إلى الـ Level (للعلاقة)
-                    level2.Courses.Add(courseTerm1);
+            //    }
+            //    // --------------------- Add Courses to level 2 ---------------------
+            //    var level2 = await _context.Levels.FirstOrDefaultAsync(l => l.LevelNumber == 2);
+            //    if (level2 is not null)
+            //    {
+            //        var courseTerm1 = new Course
+            //        {
+            //            Title = "الترم الأول - تانية ثانوي",
+            //            LevelFK = level2?.Id ?? 0, // ربط بالمستوى المضاف
+            //            Level = level2,
+            //            CreatedBy = 1,
+            //            CreatedOn = DateTime.Now,
+            //            LastModifiedBy = 1,
+            //            LastModifiedOn = DateTime.Now,
+            //            IsDeleted = false
+            //        };
+            //        await _context.Courses.AddAsync(courseTerm1);
+            //        // إضافة الـ Courses إلى الـ Level (للعلاقة)
+            //        level2.Courses.Add(courseTerm1);
 
-                }
-            }
+            //    }
+            //}
 
 
             // --------------------- Seeding Lessons ---------------------
-            if (!_context.Lessons.Any())
-            {
-                // --------------------- Seeding Lessons ---------------------
-                // --------------------- Add New Lessons for Course 1 level 1 ---------------------
-                var course1 = await _context.Courses.FirstOrDefaultAsync(c => c.Id == 1);
-                if (course1 is not null)
-                {
+            //if (!_context.Lessons.Any())
+            //{
+            //    // --------------------- Seeding Lessons ---------------------
+            //    // --------------------- Add New Lessons for Course 1 level 1 ---------------------
+            //    var course1 = await _context.Courses.FirstOrDefaultAsync(c => c.Id == 1);
+            //    if (course1 is not null)
+            //    {
 
-                    var videos1 = new List<string> { "https://youtu.be/video1", "https://youtu.be/video2" };
-                    var videos2 = new List<string> { "https://youtu.be/video3", "https://youtu.be/video4" };
-                    var videos3 = new List<string> { "https://youtu.be/video5", "https://youtu.be/video6" };
-                    List<Lesson> lessons = new List<Lesson>()
-                    {
-                           new Lesson
-                           {
-                              Title = "كان التامة _ الفرق بين كان الناقصة والتامة في دقايق",
-                              Description = "شرح الفرق بين كان الناقصة والتامة",
-                              ImageName = "صورة1.jpg",
-                              //VideoName = videos1,
-                              DocName = null,
-                              CourseIdFK = course1.Id,
-                              CreatedBy = 1,
-                              CreatedOn = DateTime.Now,
-                              LastModifiedBy = 1,
-                              LastModifiedOn = DateTime.Now,
-                              IsDeleted = false
-                           },
-                           new Lesson
-                           {
-                              Title = "إعمال اسم الفاعل _ تعلم الإعراب بسهولة",
-                              Description = "شرح إعمال اسم الفاعل",
-                              ImageName = "صورة2.jpg",
-                              //VideoName = videos2,
-                              DocName = null,
-                              CourseIdFK = course1.Id,
-                              CreatedBy = 1,
-                              CreatedOn = DateTime.Now,
-                              LastModifiedBy = 1,
-                              LastModifiedOn = DateTime.Now,
-                              IsDeleted = false
-                           },
-                           new Lesson
-                           {
-                               Title = "تعلم الإعراب بسهولة - كان وأخواتها",
-                               Description = "شرح كان وأخواتها",
-                               ImageName = "صورة3.jpg",
-                               //VideoName = videos3,
-                               DocName = null,
-                               CourseIdFK = course1.Id,
-                               CreatedBy = 1,
-                               CreatedOn = DateTime.Now,
-                               LastModifiedBy = 1,
-                               LastModifiedOn = DateTime.Now,
-                               IsDeleted = false
-                           }
-                    };
+            //        var videos1 = new List<string> { "https://youtu.be/video1", "https://youtu.be/video2" };
+            //        var videos2 = new List<string> { "https://youtu.be/video3", "https://youtu.be/video4" };
+            //        var videos3 = new List<string> { "https://youtu.be/video5", "https://youtu.be/video6" };
+            //        List<Lesson> lessons = new List<Lesson>()
+            //        {
+            //               new Lesson
+            //               {
+            //                  Title = "كان التامة _ الفرق بين كان الناقصة والتامة في دقايق",
+            //                  Description = "شرح الفرق بين كان الناقصة والتامة",
+            //                  ImageName = "صورة1.jpg",
+            //                  //VideoName = videos1,
+            //                  DocName = null,
+            //                  CourseIdFK = course1.Id,
+            //                  CreatedBy = 1,
+            //                  CreatedOn = DateTime.Now,
+            //                  LastModifiedBy = 1,
+            //                  LastModifiedOn = DateTime.Now,
+            //                  IsDeleted = false
+            //               },
+            //               new Lesson
+            //               {
+            //                  Title = "إعمال اسم الفاعل _ تعلم الإعراب بسهولة",
+            //                  Description = "شرح إعمال اسم الفاعل",
+            //                  ImageName = "صورة2.jpg",
+            //                  //VideoName = videos2,
+            //                  DocName = null,
+            //                  CourseIdFK = course1.Id,
+            //                  CreatedBy = 1,
+            //                  CreatedOn = DateTime.Now,
+            //                  LastModifiedBy = 1,
+            //                  LastModifiedOn = DateTime.Now,
+            //                  IsDeleted = false
+            //               },
+            //               new Lesson
+            //               {
+            //                   Title = "تعلم الإعراب بسهولة - كان وأخواتها",
+            //                   Description = "شرح كان وأخواتها",
+            //                   ImageName = "صورة3.jpg",
+            //                   //VideoName = videos3,
+            //                   DocName = null,
+            //                   CourseIdFK = course1.Id,
+            //                   CreatedBy = 1,
+            //                   CreatedOn = DateTime.Now,
+            //                   LastModifiedBy = 1,
+            //                   LastModifiedOn = DateTime.Now,
+            //                   IsDeleted = false
+            //               }
+            //        };
 
-                    await _context.Lessons.AddRangeAsync(lessons);
-                }
-                // --------------------- Add New Lessons for Course 2 level 1 ---------------------
-                var course2 = await _context.Courses.FirstOrDefaultAsync(c => c.Id == 2);
-                if (course2 is not null)
-                {
-                    var videos4 = new List<string> { "https://youtu.be/QwY1iiEUSLg", "https://youtu.be/nNyWzsPNddk" };
-                    var lesson4 = new Lesson
-                    {
-                        Title = "المصادر",
-                        Description = "",
-                        ImageName = "محمد صلاح.jpg",
-                        //VideoName = videos4,
-                        DocName = null,
-                        CourseIdFK = course2.Id,
-                        CreatedBy = 1,
-                        CreatedOn = DateTime.Now,
-                        LastModifiedBy = 1,
-                        LastModifiedOn = DateTime.Now,
-                        IsDeleted = false
-                    };
-                    await _context.Lessons.AddAsync(lesson4);
+            //        await _context.Lessons.AddRangeAsync(lessons);
+            //    }
+            //    // --------------------- Add New Lessons for Course 2 level 1 ---------------------
+            //    var course2 = await _context.Courses.FirstOrDefaultAsync(c => c.Id == 2);
+            //    if (course2 is not null)
+            //    {
+            //        var videos4 = new List<string> { "https://youtu.be/QwY1iiEUSLg", "https://youtu.be/nNyWzsPNddk" };
+            //        var lesson4 = new Lesson
+            //        {
+            //            Title = "المصادر",
+            //            Description = "",
+            //            ImageName = "محمد صلاح.jpg",
+            //            //VideoName = videos4,
+            //            DocName = null,
+            //            CourseIdFK = course2.Id,
+            //            CreatedBy = 1,
+            //            CreatedOn = DateTime.Now,
+            //            LastModifiedBy = 1,
+            //            LastModifiedOn = DateTime.Now,
+            //            IsDeleted = false
+            //        };
+            //        await _context.Lessons.AddAsync(lesson4);
 
-                }
+            //    }
 
-                // --------------------- Add New Lessons for Course 1 in level 2 ---------------------
+            //    // --------------------- Add New Lessons for Course 1 in level 2 ---------------------
 
-                var course = await _context.Courses.FirstOrDefaultAsync(l => l.Title.Contains("الترم الأول - تانية ثانوي"));
-                if (course is not null)
-                {
-                    List<string> Videos1 = new List<string>() {
-                    "https://youtu.be/EBzmsWWFQ3Q",
-                    "https://youtu.be/glx0RZiuvcM",
-                    "https://youtu.be/yNdhG3EGST4"
-                   };
+            //    var course = await _context.Courses.FirstOrDefaultAsync(l => l.Title.Contains("الترم الأول - تانية ثانوي"));
+            //    if (course is not null)
+            //    {
+            //        List<string> Videos1 = new List<string>() {
+            //        "https://youtu.be/EBzmsWWFQ3Q",
+            //        "https://youtu.be/glx0RZiuvcM",
+            //        "https://youtu.be/yNdhG3EGST4"
+            //       };
 
-                    var lesson1 = new Lesson
-                    {
-                        Title = "أدوات نصب الفعل المضارع بطريقة ممتعة",
-                        Description = "",
-                        ImageName = "محمد صلاح.jpg",
-                        //VideoName = Videos1,
-                        DocName = null,
-                        CourseIdFK = course.Id,
-                        course = course,
-                        CreatedBy = 1,
-                        CreatedOn = DateTime.Now,
-                        LastModifiedBy = 1,
-                        LastModifiedOn = DateTime.Now,
-                        IsDeleted = false
-                    };
+            //        var lesson1 = new Lesson
+            //        {
+            //            Title = "أدوات نصب الفعل المضارع بطريقة ممتعة",
+            //            Description = "",
+            //            ImageName = "محمد صلاح.jpg",
+            //            //VideoName = Videos1,
+            //            DocName = null,
+            //            CourseIdFK = course.Id,
+            //            course = course,
+            //            CreatedBy = 1,
+            //            CreatedOn = DateTime.Now,
+            //            LastModifiedBy = 1,
+            //            LastModifiedOn = DateTime.Now,
+            //            IsDeleted = false
+            //        };
 
-                    List<string> Videos2 = new List<string>() {
-                    "https://youtu.be/QwY1iiEUSLg",
-                    "https://youtu.be/nNyWzsPNddk",
-                    };
-                    var lesson2 = new Lesson
-                    {
-                        Title = "المصادر",
-                        Description = "",
-                        ImageName = "محمد صلاح.jpg",
-                        //VideoName = Videos2,
-                        DocName = null,
-                        CourseIdFK = course.Id,
-                        course = course,
-                        CreatedBy = 1,
-                        CreatedOn = DateTime.Now,
-                        LastModifiedBy = 1,
-                        LastModifiedOn = DateTime.Now,
-                        IsDeleted = false
-                    };
+            //        List<string> Videos2 = new List<string>() {
+            //        "https://youtu.be/QwY1iiEUSLg",
+            //        "https://youtu.be/nNyWzsPNddk",
+            //        };
+            //        var lesson2 = new Lesson
+            //        {
+            //            Title = "المصادر",
+            //            Description = "",
+            //            ImageName = "محمد صلاح.jpg",
+            //            //VideoName = Videos2,
+            //            DocName = null,
+            //            CourseIdFK = course.Id,
+            //            course = course,
+            //            CreatedBy = 1,
+            //            CreatedOn = DateTime.Now,
+            //            LastModifiedBy = 1,
+            //            LastModifiedOn = DateTime.Now,
+            //            IsDeleted = false
+            //        };
 
-                    await _context.Lessons.AddRangeAsync(lesson1, lesson2);
-                    course.lessons.Add(lesson1);
-                    course.lessons.Add(lesson2);
+            //        await _context.Lessons.AddRangeAsync(lesson1, lesson2);
+            //        course.lessons.Add(lesson1);
+            //        course.lessons.Add(lesson2);
 
-                }
-            }
+            //    }
+            //}
 
 
-            // --------------------- Add New Announcements for Lesson 1 & 2 in Course 1 ---------------------
-            var Lesson1 = _context.Lessons.Include(l => l.announcements).Include(l => l.exams).FirstOrDefault(l => l.Id == 1);
-            if (Lesson1 is not null && !Lesson1.announcements.Any())
-            {
-                var announcements = new List<Announcement>()
-                        {
-                           new Announcement
-                           {
-                                Header = "إعلان جديد: بدء الترم",
-                                Body = "يرجى حضور الدرس الأول غدًا في الساعة 10 صباحًا.",
-                                IsPinned = true,
-                                LessonIdFK = Lesson1.Id,
-                                CreatedBy = 1,
-                                CreatedOn = DateTime.Now,
-                                LastModifiedBy = 1,
-                                LastModifiedOn = DateTime.Now,
-                                IsDeleted = false
-                           },
-                           new Announcement
-                           {
-                               Header = "تغيير موعد الامتحان",
-                               Body = "تم تغيير موعد الامتحان إلى يوم الإثنين الساعة 2 ظهرًا.",
-                               IsPinned = false,
-                               LessonIdFK = Lesson1.Id,
-                               CreatedBy = 1,
-                               CreatedOn = DateTime.Now,
-                               LastModifiedBy = 1,
-                               LastModifiedOn = DateTime.Now,
-                               IsDeleted = false
-                           }
-                        };
-                await _context.Announcements.AddRangeAsync(announcements);
-            }
+            //// --------------------- Add New Announcements for Lesson 1 & 2 in Course 1 ---------------------
+            //var Lesson1 = _context.Lessons.Include(l => l.announcements).Include(l => l.exams).FirstOrDefault(l => l.Id == 1);
+            //if (Lesson1 is not null && !Lesson1.announcements.Any())
+            //{
+            //    var announcements = new List<Announcement>()
+            //            {
+            //               new Announcement
+            //               {
+            //                    Header = "إعلان جديد: بدء الترم",
+            //                    Body = "يرجى حضور الدرس الأول غدًا في الساعة 10 صباحًا.",
+            //                    IsPinned = true,
+            //                    LessonIdFK = Lesson1.Id,
+            //                    CreatedBy = 1,
+            //                    CreatedOn = DateTime.Now,
+            //                    LastModifiedBy = 1,
+            //                    LastModifiedOn = DateTime.Now,
+            //                    IsDeleted = false
+            //               },
+            //               new Announcement
+            //               {
+            //                   Header = "تغيير موعد الامتحان",
+            //                   Body = "تم تغيير موعد الامتحان إلى يوم الإثنين الساعة 2 ظهرًا.",
+            //                   IsPinned = false,
+            //                   LessonIdFK = Lesson1.Id,
+            //                   CreatedBy = 1,
+            //                   CreatedOn = DateTime.Now,
+            //                   LastModifiedBy = 1,
+            //                   LastModifiedOn = DateTime.Now,
+            //                   IsDeleted = false
+            //               }
+            //            };
+            //    await _context.Announcements.AddRangeAsync(announcements);
+            //}
 
-            var Lesson2 = _context.Lessons.Include(l => l.announcements).Include(l => l.exams).FirstOrDefault(l => l.Id == 2);
-            if (Lesson2 is not null && !Lesson2.announcements.Any())
-            {
-                var announcements = new List<Announcement>()
-                        {
-                           new Announcement
-                           {
-                                   Header = "دورة تدريبية مجانية",
-                                   Body = "سوف نقيم دورة تدريبية حول القواعد يوم السبت.",
-                                   IsPinned = true,
-                                   LessonIdFK = Lesson2.Id,
-                                   CreatedBy = 1,
-                                   CreatedOn = DateTime.Now,
-                                   LastModifiedBy = 1,
-                                   LastModifiedOn = DateTime.Now,
-                                   IsDeleted = false
-                           },
-                           new Announcement
-                           {
-                               Header = "إعدادات الواجب",
-                               Body = "يرجى تقديم الواجب رقم 3 قبل يوم الخميس.",
-                               IsPinned = false,
-                               LessonIdFK = Lesson2.Id,
-                               CreatedBy = 1,
-                               CreatedOn = DateTime.Now,
-                               LastModifiedBy = 1,
-                               LastModifiedOn = DateTime.Now,
-                               IsDeleted = false
-                           },
-                        };
-                await _context.Announcements.AddRangeAsync(announcements);
-            }
+            //var Lesson2 = _context.Lessons.Include(l => l.announcements).Include(l => l.exams).FirstOrDefault(l => l.Id == 2);
+            //if (Lesson2 is not null && !Lesson2.announcements.Any())
+            //{
+            //    var announcements = new List<Announcement>()
+            //            {
+            //               new Announcement
+            //               {
+            //                       Header = "دورة تدريبية مجانية",
+            //                       Body = "سوف نقيم دورة تدريبية حول القواعد يوم السبت.",
+            //                       IsPinned = true,
+            //                       LessonIdFK = Lesson2.Id,
+            //                       CreatedBy = 1,
+            //                       CreatedOn = DateTime.Now,
+            //                       LastModifiedBy = 1,
+            //                       LastModifiedOn = DateTime.Now,
+            //                       IsDeleted = false
+            //               },
+            //               new Announcement
+            //               {
+            //                   Header = "إعدادات الواجب",
+            //                   Body = "يرجى تقديم الواجب رقم 3 قبل يوم الخميس.",
+            //                   IsPinned = false,
+            //                   LessonIdFK = Lesson2.Id,
+            //                   CreatedBy = 1,
+            //                   CreatedOn = DateTime.Now,
+            //                   LastModifiedBy = 1,
+            //                   LastModifiedOn = DateTime.Now,
+            //                   IsDeleted = false
+            //               },
+            //            };
+            //    await _context.Announcements.AddRangeAsync(announcements);
+            //}
 
 
             // --------------------- Add New Exams for Lesson 1 & 2 in Course 1 ---------------------
-            if (Lesson1 is not null && !Lesson1.exams.Any())
-            {
-                var exam = new Exam
-                {
-                    Duration = 60, // مدة بالدقائق
-                    Title = "اختبار أدوات نصب الفعل",
-                    Description = "اختبار لدرس أدوات نصب الفعل المضارع.",
-                    StartTime = DateTime.Now.AddDays(1), // غدًا
-                    EndTime = DateTime.Now.AddDays(1).AddHours(1), // بعد ساعة من البداية
-                    IsCompleted = false,
-                    Status = null,
-                    IsAvaliable = true,
-                    LessonId = Lesson1.Id, // ربط بالدرس الأول
-                    CreatedBy = 1,
-                    CreatedOn = DateTime.Now,
-                    LastModifiedBy = 1,
-                    LastModifiedOn = DateTime.Now,
-                    IsDeleted = false
-                };
-                await _context.Exams.AddRangeAsync(exam);
-            }
-            if (Lesson2 is not null && !Lesson2.exams.Any())
-            {
-                var exam = new Exam
-                {
-                    Duration = 60, // مدة بالدقائق
-                    Title = "اختبار التوكيد",
-                    Description = "اختبار التوكيد.",
-                    StartTime = DateTime.Now.AddDays(1), // غدًا
-                    EndTime = DateTime.Now.AddDays(1).AddHours(1), // بعد ساعة من البداية
-                    IsCompleted = false,
-                    Status = null,
-                    IsAvaliable = true,
-                    LessonId = Lesson2.Id, // ربط بالدرس الأول
-                    CreatedBy = 1,
-                    CreatedOn = DateTime.Now,
-                    LastModifiedBy = 1,
-                    LastModifiedOn = DateTime.Now,
-                    IsDeleted = false
-                };
-                await _context.Exams.AddRangeAsync(exam);
-            }
+            //if (Lesson1 is not null && !Lesson1.exams.Any())
+            //{
+            //    var exam = new Exam
+            //    {
+            //        Duration = 60, // مدة بالدقائق
+            //        Title = "اختبار أدوات نصب الفعل",
+            //        Description = "اختبار لدرس أدوات نصب الفعل المضارع.",
+            //        StartTime = DateTime.Now.AddDays(1), // غدًا
+            //        EndTime = DateTime.Now.AddDays(1).AddHours(1), // بعد ساعة من البداية
+            //        IsCompleted = false,
+            //        Status = null,
+            //        IsAvaliable = true,
+            //        LessonId = Lesson1.Id, // ربط بالدرس الأول
+            //        CreatedBy = 1,
+            //        CreatedOn = DateTime.Now,
+            //        LastModifiedBy = 1,
+            //        LastModifiedOn = DateTime.Now,
+            //        IsDeleted = false
+            //    };
+            //    await _context.Exams.AddRangeAsync(exam);
+            //}
+            //if (Lesson2 is not null && !Lesson2.exams.Any())
+            //{
+            //    var exam = new Exam
+            //    {
+            //        Duration = 60, // مدة بالدقائق
+            //        Title = "اختبار التوكيد",
+            //        Description = "اختبار التوكيد.",
+            //        StartTime = DateTime.Now.AddDays(1), // غدًا
+            //        EndTime = DateTime.Now.AddDays(1).AddHours(1), // بعد ساعة من البداية
+            //        IsCompleted = false,
+            //        Status = null,
+            //        IsAvaliable = true,
+            //        LessonId = Lesson2.Id, // ربط بالدرس الأول
+            //        CreatedBy = 1,
+            //        CreatedOn = DateTime.Now,
+            //        LastModifiedBy = 1,
+            //        LastModifiedOn = DateTime.Now,
+            //        IsDeleted = false
+            //    };
+            //    await _context.Exams.AddRangeAsync(exam);
+            //}
 
             // --------------------- Add Questions for exam of lesson 1 ---------------------
-            var exam1 = await _context.Exams.Include(e => e.questions).FirstOrDefaultAsync(e => e.Id == 1);
-            if (exam1 is not null && !exam1.questions.Any())
-            {
-                var questions = new List<Question>()
-                        {
-                           new Question
-                           {
-                               Header = "ما هي أدوات نصب الفعل؟",
-                               Body = "حدد جميع أدوات نصب الفعل المضارع.",
-                               Mark = 5,
-                               Type = QuestionType.MCQ,
-                               ExamId = exam1.Id, // ربط بالاختبار الأول
-                               CreatedBy = 1,
-                               CreatedOn = DateTime.Now,
-                               LastModifiedBy = 1,
-                               LastModifiedOn = DateTime.Now,
-                               IsDeleted = false,
-                               Options = new HashSet<QuestionOptions>
-                               {
-                                   new QuestionOptions { OptionText = "أن", IsCorrect = true },
-                                   new QuestionOptions { OptionText = "لن", IsCorrect = false },
-                                   new QuestionOptions { OptionText = "كي", IsCorrect = false },
-                                   new QuestionOptions { OptionText = "لما", IsCorrect = false },
-                                   new QuestionOptions { OptionText = "حتى", IsCorrect = false }
-                               }
-                           },
-                           new Question
-                           {
-                               Header = "هل الجملة صحيحة؟",
-                               Body = "الفعل المضارع ينصب بـ 'أن'.",
-                               Mark = 3,
-                               Type = QuestionType.TrueFalse, // افتراضي
-                               ExamId = exam1.Id, // ربط بالاختبار الأول
-                               CreatedBy = 1,
-                               CreatedOn = DateTime.Now,
-                               LastModifiedBy = 1,
-                               LastModifiedOn = DateTime.Now,
-                               IsDeleted = false
-                           }
-                        };
-                await _context.Questions.AddRangeAsync(questions);
-            }
+            //var exam1 = await _context.Exams.Include(e => e.questions).FirstOrDefaultAsync(e => e.Id == 1);
+            //if (exam1 is not null && !exam1.questions.Any())
+            //{
+            //    var questions = new List<Question>()
+            //            {
+            //               new Question
+            //               {
+            //                   Header = "ما هي أدوات نصب الفعل؟",
+            //                   Body = "حدد جميع أدوات نصب الفعل المضارع.",
+            //                   Mark = 5,
+            //                   Type = QuestionType.MCQ,
+            //                   ExamId = exam1.Id, // ربط بالاختبار الأول
+            //                   CreatedBy = 1,
+            //                   CreatedOn = DateTime.Now,
+            //                   LastModifiedBy = 1,
+            //                   LastModifiedOn = DateTime.Now,
+            //                   IsDeleted = false,
+            //                   Options = new HashSet<QuestionOptions>
+            //                   {
+            //                       new QuestionOptions { OptionText = "أن", IsCorrect = true },
+            //                       new QuestionOptions { OptionText = "لن", IsCorrect = false },
+            //                       new QuestionOptions { OptionText = "كي", IsCorrect = false },
+            //                       new QuestionOptions { OptionText = "لما", IsCorrect = false },
+            //                       new QuestionOptions { OptionText = "حتى", IsCorrect = false }
+            //                   }
+            //               },
+            //               new Question
+            //               {
+            //                   Header = "هل الجملة صحيحة؟",
+            //                   Body = "الفعل المضارع ينصب بـ 'أن'.",
+            //                   Mark = 3,
+            //                   Type = QuestionType.TrueFalse, // افتراضي
+            //                   ExamId = exam1.Id, // ربط بالاختبار الأول
+            //                   CreatedBy = 1,
+            //                   CreatedOn = DateTime.Now,
+            //                   LastModifiedBy = 1,
+            //                   LastModifiedOn = DateTime.Now,
+            //                   IsDeleted = false
+            //               }
+            //            };
+            //    await _context.Questions.AddRangeAsync(questions);
+            //}
 
-            // --------------------- Add Questions for exam of lesson 2 ---------------------
-            var exam2 = await _context.Exams.Include(e => e.questions).FirstOrDefaultAsync(e => e.Id == 2);
-            if (exam2 is not null && !exam2.questions.Any())
-            {
-                var questions = new List<Question>()
-                        {
-                           new Question
-                           {
-                               Header = "ما هي أدوات التوكيد؟",
-                               Body = "حدد جميع أدوات التوكيد.",
-                               Mark = 5,
-                               Type = QuestionType.MCQ, // افتراضي، استبدله حسب enum الخاص بك
-                               ExamId = exam2.Id, // ربط بالاختبار الأول
-                               CreatedBy = 1,
-                               CreatedOn = DateTime.Now,
-                               LastModifiedBy = 1,
-                               LastModifiedOn = DateTime.Now,
-                               IsDeleted = false,
-                               Options = new HashSet<QuestionOptions>
-                               {
-                                   new QuestionOptions { OptionText = "قد", IsCorrect = true },
-                                   new QuestionOptions { OptionText = "لن", IsCorrect = false },
-                                   new QuestionOptions { OptionText = "إن", IsCorrect = false },
-                                   new QuestionOptions { OptionText = "لا", IsCorrect = false },
-                                   new QuestionOptions { OptionText = "أكد", IsCorrect = false }
-                               }
-                           },
-                           new Question
-                           {
-                               Header = "هل الجملة صحيحة؟",
-                               Body = "يا اداه توكيد ؟",
-                               Mark = 3,
-                               Type = QuestionType.TrueFalse, // افتراضي
-                               ExamId = exam2.Id, // ربط بالاختبار الأول
-                               CreatedBy = 1,
-                               CreatedOn = DateTime.Now,
-                               LastModifiedBy = 1,
-                               LastModifiedOn = DateTime.Now,
-                               IsDeleted = false
-                           }
-                        };
-                await _context.Questions.AddRangeAsync(questions);
-            }
+            //// --------------------- Add Questions for exam of lesson 2 ---------------------
+            //var exam2 = await _context.Exams.Include(e => e.questions).FirstOrDefaultAsync(e => e.Id == 2);
+            //if (exam2 is not null && !exam2.questions.Any())
+            //{
+            //    var questions = new List<Question>()
+            //            {
+            //               new Question
+            //               {
+            //                   Header = "ما هي أدوات التوكيد؟",
+            //                   Body = "حدد جميع أدوات التوكيد.",
+            //                   Mark = 5,
+            //                   Type = QuestionType.MCQ, // افتراضي، استبدله حسب enum الخاص بك
+            //                   ExamId = exam2.Id, // ربط بالاختبار الأول
+            //                   CreatedBy = 1,
+            //                   CreatedOn = DateTime.Now,
+            //                   LastModifiedBy = 1,
+            //                   LastModifiedOn = DateTime.Now,
+            //                   IsDeleted = false,
+            //                   Options = new HashSet<QuestionOptions>
+            //                   {
+            //                       new QuestionOptions { OptionText = "قد", IsCorrect = true },
+            //                       new QuestionOptions { OptionText = "لن", IsCorrect = false },
+            //                       new QuestionOptions { OptionText = "إن", IsCorrect = false },
+            //                       new QuestionOptions { OptionText = "لا", IsCorrect = false },
+            //                       new QuestionOptions { OptionText = "أكد", IsCorrect = false }
+            //                   }
+            //               },
+            //               new Question
+            //               {
+            //                   Header = "هل الجملة صحيحة؟",
+            //                   Body = "يا اداه توكيد ؟",
+            //                   Mark = 3,
+            //                   Type = QuestionType.TrueFalse, // افتراضي
+            //                   ExamId = exam2.Id, // ربط بالاختبار الأول
+            //                   CreatedBy = 1,
+            //                   CreatedOn = DateTime.Now,
+            //                   LastModifiedBy = 1,
+            //                   LastModifiedOn = DateTime.Now,
+            //                   IsDeleted = false
+            //               }
+            //            };
+            //    await _context.Questions.AddRangeAsync(questions);
+            //}
 
             await _context.SaveChangesAsync();
 

@@ -1,4 +1,5 @@
 ﻿using BusinessAccessLayes.ServiceManagers;
+using DataAccessLayer.Models.Contents.Lessons;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,7 @@ namespace Masaq_APP.Controllers
 
         [AllowAnonymous]
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<LessonDetailsDTO>> GetLessonByIdAsync(int id)
+        public async Task<ActionResult<Lesson>> GetLessonByIdAsync(int id)
         {
             var lesson = await _serviceManager.LessonService.GetLessonByIdAsync(id);
             if (lesson is null)
@@ -63,7 +64,7 @@ namespace Masaq_APP.Controllers
             return Ok(comments);
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("announcements/{id:int}")]
         public async Task DeleteAnnouncement(int id)
         {
@@ -72,14 +73,14 @@ namespace Masaq_APP.Controllers
 
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task DeleteLesson(int id)
         {
            await _serviceManager.LessonService.DeleteLesson(id);
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("Comment/{id:int}")]
         public async Task DeleteComment(int id)
         {
@@ -87,11 +88,12 @@ namespace Masaq_APP.Controllers
 
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("Lesson")]
-        public async Task CreateLesson([FromBody] UpdateLessonDTO LessonDTO)
+        public async Task<Lesson> CreateLesson([FromForm] UpdateLessonDTO LessonDTO)
         { 
-            await _serviceManager.LessonService.AddLessonAsync(LessonDTO);
+             var x = await _serviceManager.LessonService.AddLessonAsync(LessonDTO);
+            return x;
         }
 
         [Authorize(Roles = "Admin")]
@@ -121,6 +123,14 @@ namespace Masaq_APP.Controllers
         {
             var lessons = await _serviceManager.LessonService.GetLessonsByCourseAsync(courseId);
             return Ok(lessons);
+        }
+
+
+        [HttpPut("UpdateLesson/{id:int}")]
+        public async Task<ActionResult<UpdateLessonDTO>> Update(int id , UpdateLessonDTO updatelessonDTO)
+        {
+            var lesson = await _serviceManager.LessonService.UpdateLessonAsync(id, updatelessonDTO);
+            return Ok(lesson);
         }
 
     }

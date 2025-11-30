@@ -11,19 +11,22 @@ namespace DataAccessLayer.Models.Contents.Questions
 {
     public class Question:BaseOfAllContentEntities<int>
     {
-        public string Header { get; set; }
-        public string Body { get; set; }
-        public int Mark { get; set; }
+        //public string Header { get; set; }
+        //public string Body { get; set; }
+        //public int Mark { get; set; }
+        public string Title { get; set; }
 
-        public QuestionType Type { get; set; }
+        public string? PicUrl { get; set; }
+
+        //public QuestionType Type { get; set; }
         //--------------------------------------------------------
-        public int ExamId { get; set; }   // FK
+        public int? ExamId { get; set; }   // FK
         [ForeignKey(nameof(ExamId))]
         [InverseProperty(nameof(Exam.questions))]
-        public Exam exam { get; set; }
+        public Exam Exam { get; set; }
         //-----------------------------------------------------
 
-        public ICollection<QuestionOptions>? Options { get; set; } = new HashSet<QuestionOptions>();
+        public ICollection<Answer>? Options { get; set; } = new HashSet<Answer>();
 
         public ICollection<StudentAnswer> studentAnswers { get; set; }=new HashSet<StudentAnswer>();
 

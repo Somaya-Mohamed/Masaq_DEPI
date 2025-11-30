@@ -15,12 +15,13 @@ namespace DataAccessLayer.Data.Configration_classes
         {
 
             #region  one to many relationship between ُexam(one) and lesson(many)
-            builder.HasOne(e => e.Lesson).WithMany(l => l.exams).HasForeignKey(e => e.LessonId);
+            builder.HasOne(e => e.Lesson).WithMany(l => l.exams).HasForeignKey(e => e.LessonId).OnDelete(DeleteBehavior.SetNull);
+            builder.HasOne(e => e.Course).WithMany(l => l.exams).HasForeignKey(e => e.CourseId).OnDelete(DeleteBehavior.SetNull);
+            builder.HasMany(e => e.questions).WithOne(q => q.Exam).HasForeignKey(q => q.ExamId).OnDelete(DeleteBehavior.SetNull);
 
             #endregion
 
 
-            builder.Property(e=>e.Description).HasColumnType("nvarchar(200)").IsRequired(false);
             base.Configure(builder);
 
         }    }

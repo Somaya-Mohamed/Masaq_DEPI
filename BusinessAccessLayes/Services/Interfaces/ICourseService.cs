@@ -1,11 +1,11 @@
-﻿using Shared.DataTransferObjects.Courses;
+﻿using DataAccessLayer.Models.Levels;
+using Shared.DataTransferObjects.Courses;
+using Shared.DataTransferObjects.Courses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using Shared.DataTransferObjects.Courses;
 
 namespace BusinessAccessLayes.Services.Interfaces
 {
@@ -27,5 +27,8 @@ namespace BusinessAccessLayes.Services.Interfaces
 
 
         Task<bool> DeleteAsync(int id);
+        Task<IEnumerable<Level>> getLevels();
+
+        Task<Level> addLevel(Level level);
     }
 }

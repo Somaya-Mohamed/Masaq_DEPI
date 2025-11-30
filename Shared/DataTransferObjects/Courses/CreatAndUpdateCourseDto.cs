@@ -10,6 +10,9 @@ namespace Shared.DataTransferObjects.Courses
     public class CreatAndUpdateCourseDto
     {
         public string Title { get; set; } = null!;
+        public string? Description { get; set; }
+        public IFormFile? ImageUrl { get; set; }
+        public string? ImgUrl { get; set; }
         public int LevelFK { get; set; }
 
         public IFormFile? Image { get; set; }

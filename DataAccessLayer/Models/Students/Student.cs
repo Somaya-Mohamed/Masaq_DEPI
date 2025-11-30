@@ -36,6 +36,8 @@ namespace DataAccessLayer.Models.Students
 
         public ICollection<Comment> comments { get; set; } = new HashSet<Comment>();
 
+
+        
         public ICollection<StudentExam> studentExams { get; set; } = new HashSet<StudentExam>();
         public ICollection<StudentLesson> studentLessons { get; set; } = new HashSet<StudentLesson>();
 
