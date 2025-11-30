@@ -19,6 +19,7 @@ namespace Masaq_app.Controllers
             _serviceManager = serviceManager;
         }
 
+
         // GET: api/courses
         [HttpGet]
         [AllowAnonymous]
@@ -98,3 +99,5 @@ namespace Masaq_app.Controllers
         }
     }
 }
+
+

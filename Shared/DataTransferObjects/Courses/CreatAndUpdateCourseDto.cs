@@ -14,5 +14,7 @@ namespace Shared.DataTransferObjects.Courses
         public IFormFile? ImageUrl { get; set; }
         public string? ImgUrl { get; set; }
         public int LevelFK { get; set; }
+
+        public IFormFile? Image { get; set; }
     }
 }
