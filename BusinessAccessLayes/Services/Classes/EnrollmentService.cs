@@ -12,9 +12,27 @@ namespace BusinessAccessLayes.Services.Classes
 {
     public class EnrollmentService(MasaqDbContext _dbcontext) : IEnrollmentService
     {
-        public async Task<bool> CheckEnrollment(int studentId, int TargetId)
+        public async Task<bool> CheckEnrollment(int studentId, int TargetId , string targetType = "course")
         {
+            
+            if (targetType!= "course")
+            {
+
+            var lesson = _dbcontext.Lessons.Where(l=>l.Id == TargetId).FirstOrDefault();
+                var IsEnrollment1 = _dbcontext.Enrollments.FirstOrDefault(e => e.StudentId == studentId
+
+           && (e.CourseId == TargetId || e.LessonId == TargetId || (lesson != null && lesson.CourseIdFK == e.CourseId)));
+
+                if (IsEnrollment1 == null)
+                {
+                    return false;
+                }
+                return true;
+            }
+
+
             var IsEnrollment = _dbcontext.Enrollments.FirstOrDefault(e => e.StudentId == studentId 
+
             && (e.CourseId == TargetId || e.LessonId == TargetId));
 
             if (IsEnrollment == null) {
@@ -40,7 +58,7 @@ namespace BusinessAccessLayes.Services.Classes
             }
 
 
-            if(code.CourseId != EnrollmentData.courseId || code.LessonId != EnrollmentData.lessonId)
+            if(code.CourseId != EnrollmentData.courseId)
             {
                 return null;
             }

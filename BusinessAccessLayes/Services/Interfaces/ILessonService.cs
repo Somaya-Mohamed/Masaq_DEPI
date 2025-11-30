@@ -18,7 +18,7 @@ namespace BusinessAccessLayes.Services.Interfaces
        
         //////////
         
-        Task UpdateLessonAsync(UpdateLessonDTO updateLessonDTO);
+        Task<UpdateLessonDTO> UpdateLessonAsync(int id , UpdateLessonDTO updateLessonDTO);
 
         //////////
         

@@ -83,6 +83,7 @@ namespace BusinessAccessLayes.Services.Classes
                 await _dbContext.SaveChangesAsync();
             }
 
+           await _userManager.RemoveFromRoleAsync(user , "STUDENT");
             var result = await _userManager.DeleteAsync(user);
             return result.Succeeded;
         }

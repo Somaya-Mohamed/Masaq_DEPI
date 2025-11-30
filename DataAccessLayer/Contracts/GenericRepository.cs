@@ -14,7 +14,8 @@ namespace DataAccessLayer.Contracts
     {
         public async Task AddAsync(IEntity entity)
         {
-           await dbContext.Set<IEntity>().AddAsync(entity);
+            await dbContext.Set<IEntity>().AddAsync(entity);
+           
         }
 
 

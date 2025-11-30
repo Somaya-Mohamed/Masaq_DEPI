@@ -16,7 +16,7 @@ namespace DataAccessLayer.Models
     {
         [Key]
         public int Id { get; set; } // surrogate PK
-        public int StudentId { get; set; }
+        public int? StudentId { get; set; }
 
         [ForeignKey(nameof(StudentId))]
         public Student Student { get; set; }

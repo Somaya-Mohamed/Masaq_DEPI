@@ -15,6 +15,8 @@ namespace Shared.DataTransferObjects.Lessons
         public IFormFile? ImageName { get; set; }
         public string? DocName { get; set; }
 
+        public string? img { get; set; }
+
         public int CourseIdFK { get; set; }
         //public string? CourseName { get; set; } = null!;
         //public string LevelName { get; set; } = null!; // 👈 New field

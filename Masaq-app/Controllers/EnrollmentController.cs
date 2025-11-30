@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DataTransferObjects.Enrollment;
+using System.Security.Claims;
 
 namespace Masaq_app.Controllers
 {
@@ -12,17 +13,27 @@ namespace Masaq_app.Controllers
 
 
         [HttpGet("check")]
-        public async Task<bool> CheckEnrollment(int studentId, int TargetId)
-        {
-            var res = await _serviceManager.EnrollmentService.CheckEnrollment(studentId, TargetId);
+        public async Task<bool> CheckEnrollment(int TargetId , string TargetType)
+                                    {
+
+            var studentIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(studentIdClaim, out var stuId))
+                return false;
+
+            var res = await _serviceManager.EnrollmentService.CheckEnrollment(stuId, TargetId , TargetType);
             return  res;
         }
 
 
-        [HttpPost("enroll/{studentId:int}")]
-        public async Task<IActionResult> EnrollStudent(int studentId, [FromBody] EnrollmentDataDto EnrollmentData)
+        [HttpPost("enroll")]
+        public async Task<IActionResult> EnrollStudent([FromBody] EnrollmentDataDto EnrollmentData)
         {
-            var enrollment = await _serviceManager.EnrollmentService.EnrollStudentAsync(studentId, EnrollmentData);
+
+            var studentIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(studentIdClaim, out var stuId))
+                return Unauthorized("Invalid student ID in token");
+
+            var enrollment = await _serviceManager.EnrollmentService.EnrollStudentAsync(stuId, EnrollmentData);
             if (enrollment == null)
             {
                 return BadRequest("Enrollment failed. Please check the provided data.");

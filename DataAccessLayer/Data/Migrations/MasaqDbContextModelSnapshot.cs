@@ -352,7 +352,7 @@ namespace DataAccessLayer.Data.Migrations
                     b.Property<DateTime?>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("ExamId")
+                    b.Property<int?>("ExamId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
@@ -529,6 +529,9 @@ namespace DataAccessLayer.Data.Migrations
                     b.Property<int>("NumberOfStudents")
                         .HasColumnType("int");
 
+                    b.Property<string>("name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Levels");
@@ -600,7 +603,7 @@ namespace DataAccessLayer.Data.Migrations
                     b.Property<DateTime>("SendDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("StudentId")
+                    b.Property<int?>("StudentId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("SubmittedAt")
@@ -884,7 +887,7 @@ namespace DataAccessLayer.Data.Migrations
                     b.HasOne("DataAccessLayer.Models.Contents.Questions.Question", "Question")
                         .WithMany("Options")
                         .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Question");
@@ -925,12 +928,12 @@ namespace DataAccessLayer.Data.Migrations
                     b.HasOne("DataAccessLayer.Models.Contents.Courses.Course", "Course")
                         .WithMany("exams")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("DataAccessLayer.Models.Contents.Lessons.Lesson", "Lesson")
                         .WithMany("exams")
                         .HasForeignKey("LessonId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Course");
 
@@ -953,7 +956,7 @@ namespace DataAccessLayer.Data.Migrations
                     b.HasOne("DataAccessLayer.Models.Contents.Lessons.Lesson", "Lesson")
                         .WithMany("LessonVideos")
                         .HasForeignKey("LessonID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Lesson");
@@ -964,8 +967,7 @@ namespace DataAccessLayer.Data.Migrations
                     b.HasOne("DataAccessLayer.Models.Contents.Exams.Exam", "Exam")
                         .WithMany("questions")
                         .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Exam");
                 });
@@ -1007,8 +1009,7 @@ namespace DataAccessLayer.Data.Migrations
                     b.HasOne("DataAccessLayer.Models.Students.Student", "Student")
                         .WithMany("studentExams")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Exam");
 

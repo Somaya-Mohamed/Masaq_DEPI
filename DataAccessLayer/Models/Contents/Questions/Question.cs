@@ -20,7 +20,7 @@ namespace DataAccessLayer.Models.Contents.Questions
 
         //public QuestionType Type { get; set; }
         //--------------------------------------------------------
-        public int ExamId { get; set; }   // FK
+        public int? ExamId { get; set; }   // FK
         [ForeignKey(nameof(ExamId))]
         [InverseProperty(nameof(Exam.questions))]
         public Exam Exam { get; set; }

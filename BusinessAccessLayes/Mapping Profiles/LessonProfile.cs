@@ -27,6 +27,8 @@ namespace BusinessAccessLayes.Mapping_Profiles
             CreateMap<Lesson, LessonDetailsDTO>()
                 .ForMember(dest => dest.ImageName, opt => opt.MapFrom<PictureResolver<LessonDetailsDTO>>());
 
+
+
             CreateMap<Lesson, UpdateLessonDTO>()
               .ReverseMap()
               .ForMember(d => d.announcements, opt => opt.Ignore())

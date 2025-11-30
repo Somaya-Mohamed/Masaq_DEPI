@@ -10,6 +10,7 @@ namespace DataAccessLayer.Models.Levels
         public int LevelNumber { get; set; }
         public int NumberOfStudents { get; set; }
         public string AcademicYear { get; set; }
+        public string? name { get; set; }
 
         #region One to many relationship between level and course
 

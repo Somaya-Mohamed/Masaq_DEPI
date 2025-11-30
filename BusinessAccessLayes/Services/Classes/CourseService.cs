@@ -3,7 +3,9 @@ using BusinessAccessLayes.Services.Interfaces;
 using BusinessAccessLayes.Specification.Courses;
 using BusinessLogic.Services.Interfaces;
 using DataAccessLayer.Models.Contents.Courses;
+using DataAccessLayer.Models.Levels;
 using DataAccessLayer.Repositories.UnitOfWork;
+using Microsoft.Extensions.Configuration;
 using Shared.DataTransferObjects.Courses;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace BusinessAccessLayes.Services.Classes
 {
-    public class CourseService(IUnitOfWork unitOfWork, IMapper mapper , IAttachmentService _attach) : ICourseService
+    public class CourseService(IUnitOfWork unitOfWork, IMapper mapper , IAttachmentService _attach , IConfiguration _config) : ICourseService
     {
         public async Task<IEnumerable<CourseDto>> GetAllAsync()
         {
@@ -58,8 +60,15 @@ namespace BusinessAccessLayes.Services.Classes
             if (course == null) return false;
 
             mapper.Map(dto, course);
-            course.ImageUrl = _attach.Upload(dto.ImageUrl, "courses");
-            repo.Update(course);
+            if(dto.ImgUrl == (_config["Urls:BaseUrl"] + course.ImageUrl) && dto.ImageUrl == null)
+            {
+                course.ImageUrl = course.ImageUrl;
+            }
+            else
+            {
+                course.ImageUrl = _attach.Upload(dto.ImageUrl, "courses");
+            }
+                repo.Update(course);
             await unitOfWork.SaveChangesAsync();
             return true;
         }
@@ -74,6 +83,23 @@ namespace BusinessAccessLayes.Services.Classes
             repo.Update(course);
             await unitOfWork.SaveChangesAsync();
             return true;
+        }
+
+
+        public async Task<IEnumerable<Level>> getLevels()
+        {
+            var repo = unitOfWork.GetRepository<Level, int>();
+            var levels = await repo.GetAllAsync();
+            return levels;
+        }
+
+        public async Task<Level> addLevel(Level level)
+        {
+
+            var repo =  unitOfWork.GetRepository<Level, int>();
+            await repo.AddAsync(level);
+            await unitOfWork.SaveChangesAsync();
+            return level;
         }
     }
 }

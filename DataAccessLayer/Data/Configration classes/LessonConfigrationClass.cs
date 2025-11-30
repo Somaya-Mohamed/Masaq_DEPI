@@ -14,6 +14,7 @@ namespace DataAccessLayer.Data.Configration_classes
         public void Configure(EntityTypeBuilder<Lesson> builder)
         {
             builder.HasMany(a=>a.announcements).WithOne(l=>l.lesson).HasForeignKey(a=>a.LessonIdFK).OnDelete(DeleteBehavior.NoAction);
+            builder.HasMany(l=>l.LessonVideos).WithOne(v=>v.Lesson).HasForeignKey(a=>a.LessonID).OnDelete(DeleteBehavior.Cascade);
             builder.Property(l => l.Description).HasColumnType("nvarchar(200)");
             base.Configure(builder);
         }

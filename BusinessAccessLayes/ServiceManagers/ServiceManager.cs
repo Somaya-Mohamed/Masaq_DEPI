@@ -13,7 +13,7 @@ namespace BusinessAccessLayes.ServiceManagers
 
     public class ServiceManager(IUnitOfWork _unitOfWork, IMapper _mapper, MasaqDbContext _context, UserManager<ApplicationUser> _usermanager, IConfiguration _config, IEmailService _emailService, RoleManager<IdentityRole> _roleManager , IAttachmentService _attach) : IServiceManager
     {
-        private readonly Lazy<ILessonService> _lazyLessonService = new Lazy<ILessonService>(() => new LessonService(_unitOfWork, _mapper , _attach));
+        private readonly Lazy<ILessonService> _lazyLessonService = new Lazy<ILessonService>(() => new LessonService(_unitOfWork, _mapper , _attach , _context));
 
         private readonly Lazy<IAuthenticationService> _AuthenticationService = new Lazy<IAuthenticationService>(() => new Authentication(_usermanager, _context, _config, _emailService));
 
@@ -25,7 +25,7 @@ namespace BusinessAccessLayes.ServiceManagers
         private readonly Lazy<IUserService> _lazyUserService = new(() => new UserService(_usermanager, _mapper, _context));
         private readonly Lazy<IRoleService> _lazyRoleService = new(() => new RoleService(_roleManager, _mapper));
 
-        private readonly Lazy<ICourseService> _lazyCourseService = new(() => new CourseService(_unitOfWork, _mapper , _attach));
+        private readonly Lazy<ICourseService> _lazyCourseService = new(() => new CourseService(_unitOfWork, _mapper , _attach , _config));
 
         public IAuthenticationService AuthenticationService => _AuthenticationService.Value;
 

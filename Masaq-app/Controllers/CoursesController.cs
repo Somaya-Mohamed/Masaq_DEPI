@@ -1,4 +1,5 @@
 ﻿using BusinessAccessLayes.ServiceManagers;
+using DataAccessLayer.Models.Levels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -79,6 +80,21 @@ namespace Masaq_app.Controllers
             {
                 return BadRequest($"Cannot delete course: {ex.Message}");
             }
+        }
+
+        [HttpGet("GetAllLevels")]
+        public async Task<ActionResult<IEnumerable<Level>>> GetAllLevels()
+        {
+            var levels = await _serviceManager.CourseService.getLevels();
+            return Ok(levels);
+        }
+
+
+        [HttpPost("AddLevel")]
+        public async Task<ActionResult<Level>> AddLevel(Level level)
+        {
+            var lev = await _serviceManager.CourseService.addLevel(level);
+            return Ok(lev);
         }
     }
 }

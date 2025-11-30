@@ -18,7 +18,7 @@ namespace BusinessAccessLayes.Services.Interfaces
 
         public Task<Enrollment?> EnrollStudentAsync(int studentId , EnrollmentDataDto EnrollmentData);
 
-        public Task<bool> CheckEnrollment(int studentId, int TargetId);
+        public Task<bool> CheckEnrollment(int studentId, int TargetId , string targetType = "course");
 
 
 
